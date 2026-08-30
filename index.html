@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="responsive.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=20260830-01">
+  <link rel="stylesheet" href="responsive.css?v=20260830-01">
 </head>
 <body>
   <div id="app" class="app-shell">
@@ -25,15 +25,22 @@
           <span id="progressPhase">PROJEKT</span>
           <span id="progressCount">1 / 9</span>
         </div>
-        <div class="progress-track">
-          <div id="progressBar" class="progress-bar"></div>
-        </div>
+        <div class="progress-track"><div id="progressBar" class="progress-bar" style="width:11.11%"></div></div>
       </div>
     </header>
 
-    <main id="screen" class="screen" aria-live="polite"></main>
+    <!-- Robuster HTML-Fallback: Die Startseite ist sichtbar, auch bevor/ohne JS. -->
+    <main id="screen" class="screen" aria-live="polite">
+      <section class="start-screen">
+        <p class="eyebrow">PROJEKTANFRAGE</p>
+        <h1>Erzählen Sie uns von Ihrem Projekt.</h1>
+        <p class="lead">In wenigen Schritten erfassen wir die wichtigsten Angaben für eine erste Beurteilung.</p>
+        <button id="fallbackStartBtn" class="start-cta" type="button">Projekt starten</button>
+        <div class="micro">CA. 3–5 MINUTEN · KEIN LOGIN NÖTIG</div>
+      </section>
+    </main>
 
-    <footer id="footer" class="app-footer">
+    <footer id="footer" class="app-footer hidden">
       <div class="footer-line">
         <div class="nav-grid">
           <button id="backBtn" class="nav-button secondary" type="button">Zurück</button>
@@ -60,7 +67,7 @@
     <div class="dialog-inner">
       <p class="eyebrow">TESTMODUS</p>
       <h2>Anfrage vorbereitet.</h2>
-      <p class="body-copy">Die App hat die Anfrage vollständig zusammengestellt. In dieser Testversion wird noch nichts an einen Server gesendet.</p>
+      <p class="body-copy">Die App hat die Anfrage zusammengestellt. In dieser Testversion wird noch nichts an einen Server gesendet.</p>
       <div class="dialog-actions two">
         <button id="exportBtn" class="nav-button secondary" type="button">JSON exportieren</button>
         <button id="sentCloseBtn" class="nav-button primary" type="button">Schliessen</button>
@@ -68,6 +75,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=20260830-01" defer></script>
 </body>
 </html>
