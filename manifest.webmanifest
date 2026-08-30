@@ -1,0 +1,8 @@
+{
+  "name": "Projektanfrage",
+  "short_name": "Projektanfrage",
+  "start_url": "./#start",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}

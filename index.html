@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>Projektanfrage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="app-header">
+      <div class="header-row">
+        <div class="client-logo" aria-label="Firmenlogo">Logo</div>
+        <button id="closeBtn" class="icon-button" type="button" aria-label="Anfrage schliessen">×</button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="progressPhase">PROJEKT</span>
+          <span id="progressCount">1 / 9</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressBar" class="progress-bar"></div>
+        </div>
+      </div>
+    </header>
+
+    <main id="screen" class="screen" aria-live="polite"></main>
+
+    <footer id="footer" class="app-footer">
+      <div class="footer-line">
+        <div class="nav-grid">
+          <button id="backBtn" class="nav-button secondary" type="button">Zurück</button>
+          <button id="nextBtn" class="nav-button primary" type="button">Weiter</button>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <dialog id="resetDialog" class="dialog">
+    <div class="dialog-inner">
+      <p class="eyebrow">ANFRAGE SCHLIESSEN</p>
+      <h2>Aktuelle Eingaben verwerfen?</h2>
+      <p class="body-copy">Ihre Eingaben sind lokal gespeichert. Sie können zur Startseite zurückkehren oder die Anfrage vollständig zurücksetzen.</p>
+      <div class="dialog-actions">
+        <button id="continueBtn" class="nav-button secondary" type="button">Weiter bearbeiten</button>
+        <button id="homeBtn" class="nav-button secondary" type="button">Zur Startseite</button>
+        <button id="resetBtn" class="nav-button primary" type="button">Neu starten</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="sentDialog" class="dialog">
+    <div class="dialog-inner">
+      <p class="eyebrow">TESTMODUS</p>
+      <h2>Anfrage vorbereitet.</h2>
+      <p class="body-copy">Die App hat die Anfrage vollständig zusammengestellt. In dieser Testversion wird noch nichts an einen Server gesendet.</p>
+      <div class="dialog-actions two">
+        <button id="exportBtn" class="nav-button secondary" type="button">JSON exportieren</button>
+        <button id="sentCloseBtn" class="nav-button primary" type="button">Schliessen</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
