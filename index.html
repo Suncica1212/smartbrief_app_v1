@@ -8,9 +8,76 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="styles.css?v=20260830-01">
-  <link rel="stylesheet" href="responsive.css?v=20260830-01">
+  <style>
+:root{
+  --ink:#111315;
+  --slate:#566171;
+  --muted:#747d8c;
+  --line:#d7dce1;
+  --line-soft:#eceff1;
+  --soft:#f6f7f8;
+  --tile:#f3f3f2;
+  --tile-active:#e8ebee;
+  --white:#fff;
+  --danger:#9b3636;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;background:#eef0f2;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+body{min-height:100dvh;overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit;border-radius:0}
+button{cursor:pointer}
+.app-shell{width:min(100%,430px);height:100dvh;max-height:100dvh;margin:0 auto;background:#fff;border-left:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+.app-header{flex:0 0 auto;padding:20px 22px 0;background:#fff}
+.header-row{height:52px;display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.client-logo{font-size:17px;line-height:38px;font-weight:400}
+.icon-button{width:40px;height:40px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:23px;line-height:1}
+.progress-wrap{padding-top:19px}.progress-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase}.progress-track{height:2px;margin-top:9px;background:var(--line-soft)}.progress-bar{height:2px;background:var(--slate);transition:width .18s ease}
+.screen{flex:1 1 auto;min-height:0;padding:29px 22px 10px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}.screen::-webkit-scrollbar{display:none}
+.app-footer{flex:0 0 auto;padding:8px 22px 15px;background:#fff}.app-footer.hidden{display:none}.footer-line{border-top:1px solid var(--line);padding-top:10px}.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.nav-button{height:47px;border:1px solid var(--line);background:#fff;font-size:14px;font-weight:500}.nav-button.primary{background:var(--slate);border-color:var(--slate);color:#fff}.nav-button:disabled{cursor:default;color:#a9afb6;background:#f2f3f4;border-color:#e2e5e7}
+.eyebrow{margin:0 0 9px;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.21em;text-transform:uppercase}h1,h2{margin:0;font-weight:600}h1{font-size:19px;line-height:1.25;letter-spacing:.085em;text-transform:uppercase}h2{font-size:19px;line-height:1.3}.lead,.body-copy{margin:13px 0 0;color:var(--muted);font-size:13px;line-height:1.55}.helper,.multi-note{margin-top:9px;color:var(--muted);font-size:10px;line-height:1.45}
+.start-screen{padding-top:18px}.start-cta{width:100%;height:50px;margin-top:30px;border:1px solid var(--slate);background:var(--slate);color:#fff;text-transform:uppercase;letter-spacing:.11em;font-size:13px;font-weight:500}.micro{margin-top:11px;text-align:center;color:var(--muted);font-size:9px;font-weight:500;letter-spacing:.13em;text-transform:uppercase}
+.project-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:15px}.project-tile{position:relative;height:112px;border:1px solid transparent;background:var(--tile);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px}.project-tile.selected{border-color:var(--slate);background:var(--tile-active)}.project-tile img{width:50px;height:39px;object-fit:contain;display:block;margin-bottom:9px}.project-tile-name{font-size:12.5px;font-weight:500}.project-tick{position:absolute;right:9px;top:7px;display:none;color:var(--slate);font-size:16px;font-weight:600}.project-tile.selected .project-tick{display:block}.selection-status{height:26px;display:flex;align-items:center;color:var(--muted);font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase}
+.confirm-list{margin-top:15px;border-top:1px solid var(--line)}.confirm-row{min-height:36px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:12px}.confirm-check{width:18px;color:var(--slate);font-size:16px}
+.field-grid{display:grid;gap:11px;margin-top:15px;min-width:0}.field{min-width:0}.field label,.product-detail-field label,.product-comment label{display:block;margin-bottom:5px;color:var(--muted);font-size:8.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}input,select,textarea{width:100%;max-width:100%;min-width:0;border:1px solid var(--line);background:#fff;outline:none;font-size:12.5px;box-sizing:border-box}input,select{height:41px;padding:0 10px}textarea{min-height:67px;padding:9px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--slate)}
+.area-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:var(--muted);font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:14px}.choice{position:relative;min-height:43px;border:1px solid var(--line);background:#fff;padding:8px 25px 8px 10px;text-align:left;font-size:11px;line-height:1.25}.choice.selected{border-color:var(--slate);background:var(--soft)}.choice-mark{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:14px;height:14px;border:1px solid #adb4bc;display:grid;place-items:center;color:transparent;font-size:10px;font-weight:600}.choice.selected .choice-mark{border-color:var(--slate);color:var(--slate)}
+.product-details{margin-top:13px;border-top:1px solid var(--line)}.product-detail-row{display:grid;grid-template-columns:minmax(0,1fr) 68px minmax(105px,1fr);gap:7px;align-items:end;padding:9px 0;border-bottom:1px solid var(--line)}.product-detail-name{align-self:center;min-width:0;font-size:11px;font-weight:500;line-height:1.25}.product-detail-field,.product-comment{min-width:0}.product-detail-field input{height:35px;padding:0 7px;font-size:11.5px}.product-detail-row.has-comment .product-comment{grid-column:1/-1}.product-comment textarea{min-height:54px;font-size:11.5px}
+.design-list{margin-top:17px;border:1px solid var(--line)}.design-choice{width:100%;min-height:63px;border:0;border-bottom:1px solid var(--line);background:#fff;padding:10px 14px;text-align:left}.design-choice:last-child{border-bottom:0}.design-choice.selected{background:var(--soft)}.design-choice strong{display:block;font-size:12px}.design-choice small{display:block;margin-top:4px;color:var(--muted);font-size:10.5px;line-height:1.35}
+.area-tabs{display:flex;gap:4px;margin-top:13px;overflow-x:auto;scrollbar-width:none}.area-tab{flex:0 0 auto;height:31px;border:1px solid var(--line);background:#fff;padding:0 8px;font-size:9.5px;white-space:nowrap}.area-tab.active{border-color:var(--slate);background:var(--slate);color:#fff}.upload-box{margin-top:11px;border:1px solid var(--line)}.upload-title{height:31px;padding:0 11px;border-bottom:1px solid var(--line);display:flex;align-items:center;color:var(--muted);font-size:8.5px;font-weight:500;letter-spacing:.17em;text-transform:uppercase}.upload-row{min-height:43px;padding:6px 11px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}.upload-row:last-child{border-bottom:0}.upload-name{min-width:0;font-size:11px}.upload-file-name{margin-top:2px;color:var(--muted);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.upload-action{position:relative;width:31px;height:31px;border:1px solid var(--line);display:grid;place-items:center;font-size:16px;overflow:hidden}.upload-action input{position:absolute;inset:0;opacity:0;cursor:pointer}.drop-zone{position:relative;min-height:66px;margin-top:9px;border:1px dashed var(--slate);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer}.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}.drop-zone strong{font-size:10.5px}.drop-zone small{margin-top:4px;color:var(--muted);font-size:7.5px;letter-spacing:.09em;text-transform:uppercase}
+.check-list{margin-top:15px;border:1px solid var(--line)}.check-row{min-height:43px;padding:7px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:11px}.check-row:last-child{border-bottom:0}.check-icon{width:18px;color:var(--slate);font-size:16px}.alert,.ready{margin-top:10px;padding:11px;border-left:2px solid var(--slate);background:var(--soft)}.alert strong,.ready strong{font-size:11.5px}.alert p,.ready p{margin:4px 0 0;color:var(--muted);font-size:9.5px;line-height:1.4}
+.segment{display:grid;grid-template-columns:repeat(3,1fr);margin-top:8px;border:1px solid var(--line)}.segment button{height:38px;border:0;border-right:1px solid var(--line);background:#fff;font-size:11px}.segment button:last-child{border-right:0}.segment button.selected{background:var(--soft);font-weight:600}
+.summary{margin-top:14px;border:1px solid var(--line)}.summary-row{padding:7px 11px;border-bottom:1px solid var(--line)}.summary-row:last-child{border-bottom:0}.summary-label{color:var(--muted);font-size:7.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}.summary-value{margin-top:3px;font-size:11px;line-height:1.32}.summary-value.muted{color:#9aa1a9}.contact-grid{display:grid;gap:6px;margin-top:9px}.contact-grid input{height:38px}.validation{margin-top:8px;color:var(--danger);font-size:10px;line-height:1.4}
+.dialog{width:min(calc(100% - 36px),390px);border:1px solid var(--line);padding:0;background:#fff}.dialog::backdrop{background:rgba(17,19,21,.28)}.dialog-inner{padding:20px}.dialog-actions{display:grid;gap:7px;margin-top:18px}.dialog-actions.two{grid-template-columns:1fr 1fr}
+@media(max-height:700px){.app-header{padding-top:14px}.screen{padding-top:20px}.project-tile{height:98px}.project-tile img{width:44px;height:34px}h1{font-size:18px}}
+
+
+/* ===== RESPONSIVE ===== */
+/* SmartBrief responsive overrides */
+@media (min-width:600px) and (max-width:1023px){
+  body{display:flex;align-items:center;justify-content:center;padding:24px}
+  .app-shell{width:min(calc(100vw - 48px),860px);height:min(calc(100dvh - 48px),920px);max-height:min(calc(100dvh - 48px),920px);border:1px solid var(--line)}
+  .app-header{padding:25px 34px 0}.screen{padding:38px 34px 18px}.app-footer{padding:10px 34px 22px}
+  h1{font-size:24px;line-height:1.22}.lead,.body-copy{font-size:14px}.start-screen{max-width:620px;padding-top:34px}.start-cta,.micro{width:420px}
+  .project-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:21px}.project-tile{height:142px}.project-tile img{width:60px;height:47px}.project-tile-name{font-size:13.5px}
+  .field-grid{gap:14px;margin-top:20px}.choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:20px}.choice{min-height:50px;font-size:12px}
+  input,select{height:44px;font-size:13px}textarea{font-size:13px}.product-detail-row{grid-template-columns:minmax(150px,1fr) 90px minmax(150px,1fr);gap:10px;padding:11px 0}.product-detail-name{font-size:12px}.product-detail-field input{height:39px;font-size:12px}
+  .design-list,.upload-box,.check-list,.alert,.ready,.summary{max-width:760px}.contact-grid{max-width:760px;grid-template-columns:1fr 1fr;gap:10px}.nav-button{height:50px}
+}
+@media (min-width:1024px){
+  body{display:flex;align-items:center;justify-content:center;padding:32px 40px}
+  .app-shell{width:min(calc(100vw - 80px),1120px);height:min(calc(100dvh - 64px),920px);max-height:min(calc(100dvh - 64px),920px);border:1px solid var(--line)}
+  .app-header{padding:28px 44px 0}.screen{padding:42px 44px 22px}.app-footer{padding:10px 44px 28px}
+  h1{max-width:850px;font-size:28px;line-height:1.18}.lead,.body-copy{max-width:720px;font-size:14px}.start-screen{max-width:760px;padding-top:42px}.start-cta,.micro{width:360px}
+  .project-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-top:25px}.project-tile{height:162px}.project-tile img{width:66px;height:52px}.project-tile-name{font-size:14px}
+  .screen:has(.confirm-list){display:grid;grid-template-columns:minmax(280px,.85fr) minmax(430px,1.15fr);column-gap:52px;align-content:start}.screen:has(.confirm-list)>.eyebrow,.screen:has(.confirm-list)>h1{grid-column:1/-1}.screen:has(.confirm-list) .confirm-list{grid-column:1;margin-top:26px}.screen:has(.confirm-list) .helper{grid-column:1}.screen:has(.confirm-list) .field-grid{grid-column:2;grid-row:3/span 2;margin-top:26px}
+  .screen:has(.choice-grid){display:grid;grid-template-columns:minmax(0,1.1fr) minmax(390px,.9fr);grid-template-rows:auto auto auto auto auto;column-gap:48px;align-content:start}.screen:has(.choice-grid) .area-meta,.screen:has(.choice-grid)>.eyebrow,.screen:has(.choice-grid)>h1{grid-column:1/-1}.screen:has(.choice-grid) .choice-grid{grid-column:1;grid-row:4;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:26px}.screen:has(.choice-grid) .field-grid{grid-column:2;grid-row:4;margin-top:26px;gap:15px}.screen:has(.choice-grid) .product-details{grid-column:2;grid-row:4;margin-top:26px}.screen:has(.choice-grid) .helper{grid-column:1/-1;grid-row:5}
+  .choice{min-height:54px;font-size:12.5px}input,select{height:45px;font-size:13px}textarea{font-size:13px}.product-detail-row{grid-template-columns:minmax(140px,1fr) 88px minmax(145px,1fr);gap:10px;padding:11px 0}.product-detail-name{font-size:12px}.product-detail-field input{height:40px;font-size:12px}
+  .screen:has(.area-tabs){display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.7fr);column-gap:48px;align-content:start}.screen:has(.area-tabs)>.eyebrow,.screen:has(.area-tabs)>h1{grid-column:1/-1}.screen:has(.area-tabs) .area-tabs,.screen:has(.area-tabs) .helper,.screen:has(.area-tabs) .upload-box{grid-column:1}.screen:has(.area-tabs) .drop-zone{grid-column:2;grid-row:4;min-height:116px;margin-top:25px}
+  .screen:has(#dateField){display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.8fr);column-gap:52px;align-content:start}.screen:has(#dateField)>.eyebrow,.screen:has(#dateField)>h1{grid-column:1/-1}.screen:has(#dateField)>.field-grid:first-of-type{grid-column:1;margin-top:28px}.screen:has(#dateField)>.segment{grid-column:1}.screen:has(#dateField)>.field-grid:last-of-type{grid-column:2;grid-row:3/span 2;margin-top:28px!important}
+  .screen:has(.summary){display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.7fr);column-gap:48px;align-content:start}.screen:has(.summary)>.eyebrow,.screen:has(.summary)>h1{grid-column:1/-1}.screen:has(.summary) .summary{grid-column:1;margin-top:26px}.screen:has(.summary) .contact-grid{grid-column:2;grid-row:3;margin-top:26px}.screen:has(.summary) .validation{grid-column:2}
+  .nav-grid{grid-template-columns:210px 210px;justify-content:end;gap:10px}.nav-button{height:51px;font-size:14px}
+}
+
+  </style>
 </head>
 <body>
   <div id="app" class="app-shell">
@@ -19,7 +86,6 @@
         <div class="client-logo" aria-label="Firmenlogo">Logo</div>
         <button id="closeBtn" class="icon-button" type="button" aria-label="Anfrage schliessen">×</button>
       </div>
-
       <div class="progress-wrap">
         <div class="progress-meta">
           <span id="progressPhase">PROJEKT</span>
@@ -29,7 +95,6 @@
       </div>
     </header>
 
-    <!-- Robuster HTML-Fallback: Die Startseite ist sichtbar, auch bevor/ohne JS. -->
     <main id="screen" class="screen" aria-live="polite">
       <section class="start-screen">
         <p class="eyebrow">PROJEKTANFRAGE</p>
@@ -75,6 +140,380 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=20260830-01" defer></script>
+  <script>
+(function(){
+  "use strict";
+  window.__SMARTBRIEF_VERSION__ = "2026-08-30-2025";
+
+  var STORAGE_KEY = "smartbrief-v3-state";
+  var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
+
+  var PROJECTS = {
+    fahrzeug:{
+      name:"Fahrzeug", icon:"assets/icons/fahrzeug.png", question:"Wie sollen die Fahrzeuge beschriftet werden?",
+      choices:["Komplettbeschriftung","Teilbeschriftung","Logo / Firmenbeschriftung","Einzelne Elemente","Noch nicht sicher"],
+      fields:[
+        {id:"count",label:"Anzahl Fahrzeuge",type:"number"},
+        {id:"model",label:"Marke / Modell",type:"text"},
+        {id:"same",label:"Sind die Fahrzeuge baugleich?",type:"select",options:["","Ja","Nein","Noch nicht sicher"]}
+      ],
+      uploads:["Vorderseite","Rückseite","Linke Seite","Rechte Seite"]
+    },
+    schaufenster:{
+      name:"Schaufenster", icon:"assets/icons/schaufenster.png", question:"Was möchten Sie am Schaufenster umsetzen?",
+      choices:["Vollflächige Beschriftung","Teilbeschriftung","Sichtschutz","Aktionen / Öffnungszeiten","Noch nicht sicher"],
+      fields:[
+        {id:"count",label:"Anzahl Flächen",type:"number"},
+        {id:"size",label:"Ungefähre Breite × Höhe (in cm)",type:"text"}
+      ],
+      uploads:["Gesamtansicht","Fensterflächen","Detail Untergrund"]
+    },
+    gebaeude:{
+      name:"Gebäude", icon:"assets/icons/gebaeude.png", question:"Welche Gebäudebereiche sollen beschriftet werden?",
+      choices:["Eingangstüre","Liftbeschriftung","Stockwerke","Fassade","Innenräume","Sonstiges"],
+      fields:[
+        {id:"floors",label:"Anzahl Stockwerke",type:"number"},
+        {id:"lifts",label:"Anzahl Lifte",type:"number"}
+      ],
+      uploads:["Gesamtansicht"]
+    },
+    beschilderung:{
+      name:"Beschilderung", icon:"assets/icons/beschilderung.png", question:"Welche Beschilderungen benötigen Sie?",
+      choices:["Aussenstele","Parkplatzschilder","Wegweiser","Firmenschild","Hinweistafeln","Sonstiges"],
+      fields:[], uploads:["Übersicht Montageort"]
+    },
+    event:{
+      name:"Event / Messe", icon:"assets/icons/event.png", question:"Was möchten Sie für den Event realisieren?",
+      choices:["Messestand","Eventbranding","Displays / Roll-ups","Temporäre Beschriftung","Sonstiges"],
+      fields:[
+        {id:"event",label:"Event / Messe",type:"text"},
+        {id:"location",label:"Ort",type:"text"},
+        {id:"space",label:"Standfläche",type:"text"}
+      ],
+      uploads:["Standplan","Logo","Visualisierung / Referenz"]
+    },
+    spezialprojekt:{
+      name:"Spezialprojekt", icon:"assets/icons/spezialprojekt.png", question:"Worum geht es bei Ihrem Projekt?",
+      choices:["Objekt / Installation","Prototyp","Verpackungsdummy","Einzelanfertigung","Etwas anderes"],
+      fields:[
+        {id:"description",label:"Kurzbeschrieb",type:"text"},
+        {id:"size",label:"Ungefähre Grösse",type:"text"},
+        {id:"count",label:"Anzahl",type:"number"}
+      ],
+      uploads:["Skizze","Referenzbild","Masszeichnung","Logo"]
+    }
+  };
+
+  function makeState(){
+    var areaData = {};
+    var uploads = {};
+    PROJECT_ORDER.forEach(function(key){
+      var fields = {};
+      PROJECTS[key].fields.forEach(function(field){ fields[field.id] = ""; });
+      areaData[key] = {choices:[],fields:fields,items:{}};
+      if(key === "beschilderung"){
+        PROJECTS[key].choices.forEach(function(choice){ areaData[key].items[choice] = {count:"",size:"",comment:""}; });
+      }
+      uploads[key] = {};
+    });
+    return {
+      selected:[],
+      overview:{projectName:"",location:"",context:""},
+      areaData:areaData,
+      design:"",
+      uploadArea:"",
+      uploads:uploads,
+      extraUploads:{},
+      planning:{date:"",timing:"",budget:"",remarks:""},
+      contact:{name:"",email:""}
+    };
+  }
+
+  function loadState(){
+    var base = makeState();
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return base;
+      var saved = JSON.parse(raw);
+      if(!saved || typeof saved !== "object") return base;
+      base.selected = Array.isArray(saved.selected) ? saved.selected.filter(function(k){return PROJECT_ORDER.indexOf(k) >= 0;}) : [];
+      base.overview = Object.assign(base.overview, saved.overview || {});
+      base.design = typeof saved.design === "string" ? saved.design : "";
+      base.uploadArea = typeof saved.uploadArea === "string" ? saved.uploadArea : "";
+      base.planning = Object.assign(base.planning, saved.planning || {});
+      base.contact = Object.assign(base.contact, saved.contact || {});
+      PROJECT_ORDER.forEach(function(key){
+        var incoming = saved.areaData && saved.areaData[key] ? saved.areaData[key] : {};
+        if(Array.isArray(incoming.choices)) base.areaData[key].choices = incoming.choices.slice();
+        if(incoming.fields && typeof incoming.fields === "object") Object.assign(base.areaData[key].fields, incoming.fields);
+        if(incoming.items && typeof incoming.items === "object"){
+          Object.keys(incoming.items).forEach(function(choice){
+            if(base.areaData[key].items[choice]) Object.assign(base.areaData[key].items[choice], incoming.items[choice]);
+          });
+        }
+        if(saved.uploads && saved.uploads[key] && typeof saved.uploads[key] === "object") base.uploads[key] = Object.assign({}, saved.uploads[key]);
+        if(saved.extraUploads && Array.isArray(saved.extraUploads[key])) base.extraUploads[key] = saved.extraUploads[key].slice();
+      });
+      return base;
+    }catch(err){
+      return base;
+    }
+  }
+
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(err){}
+  }
+
+  function esc(value){
+    return String(value == null ? "" : value).replace(/[&<>"']/g,function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function toggle(arr,value){
+    return arr.indexOf(value) >= 0 ? arr.filter(function(x){return x !== value;}) : arr.concat([value]);
+  }
+
+  var state = loadState();
+  var route = {name:"start",index:0};
+  var screen,footer,backBtn,nextBtn,phaseEl,countEl,barEl,closeBtn,resetDialog,sentDialog;
+
+  function parseRoute(){
+    var hash = (location.hash || "#start").replace(/^#/,"");
+    if(hash.indexOf("area/") === 0){
+      var index = parseInt(hash.split("/")[1],10);
+      return {name:"area",index:isNaN(index)?0:index};
+    }
+    return {name:hash || "start",index:0};
+  }
+
+  function go(name,index){
+    var target = name === "area" ? "#area/" + index : "#" + name;
+    if(location.hash === target){ route = parseRoute(); render(); }
+    else location.hash = target;
+  }
+
+  function totalSteps(){ return 8 + Math.max(1,state.selected.length); }
+  function stepInfo(){
+    var n = Math.max(1,state.selected.length);
+    if(route.name === "start") return {step:1,phase:"PROJEKT"};
+    if(route.name === "select") return {step:2,phase:"PROJEKT"};
+    if(route.name === "overview") return {step:3,phase:"PROJEKT"};
+    if(route.name === "area") return {step:4 + Math.min(route.index,n-1),phase:"DETAILS"};
+    if(route.name === "design") return {step:4+n,phase:"DATEN"};
+    if(route.name === "uploads") return {step:5+n,phase:"DATEN"};
+    if(route.name === "check") return {step:6+n,phase:"PLANUNG"};
+    if(route.name === "planning") return {step:7+n,phase:"PLANUNG"};
+    return {step:8+n,phase:"ANFRAGE"};
+  }
+  function updateProgress(){
+    var info = stepInfo(), total = totalSteps();
+    phaseEl.textContent = info.phase;
+    countEl.textContent = info.step + " / " + total;
+    barEl.style.width = Math.min(100,info.step/total*100) + "%";
+  }
+  function setFooter(options){
+    options = options || {};
+    var show = options.show !== false;
+    footer.classList.toggle("hidden",!show);
+    if(!show) return;
+    backBtn.textContent = options.backLabel || "Zurück";
+    nextBtn.textContent = options.nextLabel || "Weiter";
+    nextBtn.disabled = !!options.disabled;
+    backBtn.onclick = options.back || null;
+    nextBtn.onclick = options.disabled ? null : (options.next || null);
+  }
+
+  function render(){
+    if(route.name === "area"){
+      if(!state.selected.length){ go("select"); return; }
+      if(route.index < 0 || route.index >= state.selected.length){ go("area",0); return; }
+    }
+    updateProgress();
+    screen.scrollTop = 0;
+    var fn = {
+      start:renderStart,select:renderSelect,overview:renderOverview,area:renderArea,
+      design:renderDesign,uploads:renderUploads,check:renderCheck,planning:renderPlanning,summary:renderSummary
+    }[route.name] || renderStart;
+    fn();
+  }
+
+  function renderStart(){
+    setFooter({show:false});
+    screen.innerHTML = '<section class="start-screen">'+
+      '<p class="eyebrow">PROJEKTANFRAGE</p>'+
+      '<h1>Erzählen Sie uns von Ihrem Projekt.</h1>'+
+      '<p class="lead">In wenigen Schritten erfassen wir die wichtigsten Angaben für eine erste Beurteilung.</p>'+
+      '<button id="startBtn" class="start-cta" type="button">Projekt starten</button>'+
+      '<div class="micro">CA. 3–5 MINUTEN · KEIN LOGIN NÖTIG</div></section>';
+    var startBtn = document.getElementById("startBtn"); if(startBtn) startBtn.onclick = function(){ go("select"); };
+  }
+
+  function renderSelect(){
+    var count = state.selected.length;
+    setFooter({back:function(){go("start");},next:function(){go("overview");},nextLabel:count ? "Weiter mit "+count+" Bereich"+(count===1?"":"en") : "Weiter",disabled:count===0});
+    var tiles = PROJECT_ORDER.map(function(key){
+      var cfg = PROJECTS[key], selected = state.selected.indexOf(key) >= 0;
+      return '<button class="project-tile '+(selected?'selected':'')+'" type="button" data-project="'+key+'" aria-pressed="'+selected+'">'+
+        '<span class="project-tick">✓</span><img src="'+cfg.icon+'" alt=""><span class="project-tile-name">'+esc(cfg.name)+'</span></button>';
+    }).join("");
+    screen.innerHTML = '<p class="eyebrow">SCHRITT 1</p><h1>Was möchten Sie realisieren?</h1>'+
+      '<p class="multi-note">Mehrfachauswahl möglich. Wählen Sie alle passenden Bereiche.</p><div class="project-grid">'+tiles+'</div>'+
+      '<div class="selection-status">'+(count ? count+' Bereich'+(count===1?'':'e')+' ausgewählt' : 'Noch kein Bereich ausgewählt')+'</div>';
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-project]"),function(button){
+      button.onclick = function(){
+        state.selected = toggle(state.selected,button.getAttribute("data-project")).sort(function(a,b){return PROJECT_ORDER.indexOf(a)-PROJECT_ORDER.indexOf(b);});
+        if(!state.uploadArea || state.selected.indexOf(state.uploadArea)<0) state.uploadArea = state.selected[0] || "";
+        saveState(); renderSelect();
+      };
+    });
+  }
+
+  function renderOverview(){
+    var count = state.selected.length;
+    if(!count){go("select");return;}
+    setFooter({back:function(){go("select");},next:function(){go("area",0);},nextLabel:"Projekt erfassen"});
+    var rows = state.selected.map(function(key){return '<div class="confirm-row"><span class="confirm-check">✓</span><span>'+esc(PROJECTS[key].name)+'</span></div>';}).join("");
+    var contexts = ["Neuer Standort","Umbau","Einzelprojekt","Sonstiges"].map(function(v){return '<option '+(state.overview.context===v?'selected':'')+'>'+v+'</option>';}).join("");
+    screen.innerHTML = '<p class="eyebrow">IHR PROJEKT</p><h1>Ihr Projekt umfasst '+count+' Bereich'+(count===1?'':'e')+'.</h1>'+
+      '<div class="confirm-list">'+rows+'</div><p class="helper">Diese Bereiche fragen wir nun nacheinander ab. Alles gehört zu einer einzigen Anfrage.</p>'+
+      '<div class="field-grid"><div class="field"><label>Projektname · optional</label><input id="projectName" value="'+esc(state.overview.projectName)+'"></div>'+
+      '<div class="field"><label>Standort</label><input id="projectLocation" value="'+esc(state.overview.location)+'"></div>'+
+      '<div class="field"><label>Projektart / Anlass · optional</label><select id="projectContext"><option value=""></option>'+contexts+'</select></div></div>';
+    document.getElementById("projectName").oninput=function(e){state.overview.projectName=e.target.value;saveState();};
+    document.getElementById("projectLocation").oninput=function(e){state.overview.location=e.target.value;saveState();};
+    document.getElementById("projectContext").onchange=function(e){state.overview.context=e.target.value;saveState();};
+  }
+
+  function renderArea(){
+    var index=route.index,key=state.selected[index],cfg=PROJECTS[key],data=state.areaData[key];
+    setFooter({back:function(){index===0?go("overview"):go("area",index-1);},next:function(){index===state.selected.length-1?go("design"):go("area",index+1);},nextLabel:index===state.selected.length-1?"Weiter":"Nächster Bereich"});
+    var choices = cfg.choices.map(function(choice){
+      var selected=data.choices.indexOf(choice)>=0;
+      return '<button class="choice '+(selected?'selected':'')+'" type="button" data-choice="'+esc(choice)+'">'+esc(choice)+'<span class="choice-mark">✓</span></button>';
+    }).join("");
+
+    var details="";
+    if(key === "beschilderung" && data.choices.length){
+      details='<div class="product-details">'+data.choices.map(function(choice){
+        if(!data.items[choice]) data.items[choice]={count:"",size:"",comment:""};
+        var item=data.items[choice],other=choice==="Sonstiges";
+        return '<div class="product-detail-row '+(other?'has-comment':'')+'"><div class="product-detail-name">'+esc(choice)+'</div>'+
+          '<div class="product-detail-field"><label>Anzahl</label><input type="number" min="1" inputmode="numeric" data-sign-choice="'+esc(choice)+'" data-sign-field="count" value="'+esc(item.count)+'"></div>'+
+          '<div class="product-detail-field"><label>Masse B × H (cm)</label><input type="text" placeholder="z. B. 80 × 30" data-sign-choice="'+esc(choice)+'" data-sign-field="size" value="'+esc(item.size)+'"></div>'+
+          (other?'<div class="product-comment"><label>Kommentar</label><textarea data-sign-choice="'+esc(choice)+'" data-sign-field="comment" placeholder="Kurz beschreiben, was benötigt wird.">'+esc(item.comment)+'</textarea></div>':'')+'</div>';
+      }).join("")+'</div>';
+    }else if(cfg.fields.length){
+      details='<div class="field-grid">'+cfg.fields.map(function(field){
+        var value=data.fields[field.id]||"";
+        if(field.type==="select"){
+          var opts=field.options.map(function(opt){return '<option value="'+esc(opt)+'" '+(value===opt?'selected':'')+'>'+esc(opt)+'</option>';}).join("");
+          return '<div class="field"><label>'+esc(field.label)+'</label><select data-field="'+field.id+'">'+opts+'</select></div>';
+        }
+        return '<div class="field"><label>'+esc(field.label)+'</label><input type="'+field.type+'" data-field="'+field.id+'" value="'+esc(value)+'"></div>';
+      }).join("")+'</div>';
+    }
+
+    screen.innerHTML='<div class="area-meta"><span>'+esc(cfg.name)+'</span><span>'+(index+1)+' von '+state.selected.length+' Bereichen</span></div>'+
+      '<p class="eyebrow">PROJEKTDETAILS</p><h1>'+esc(cfg.question)+'</h1><div class="choice-grid">'+choices+'</div>'+details+
+      '<p class="helper">Noch nicht sicher? Kein Problem. Sie können trotzdem weiterfahren.</p>';
+
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-choice]"),function(btn){btn.onclick=function(){data.choices=toggle(data.choices,btn.getAttribute("data-choice"));saveState();renderArea();};});
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-field]"),function(inp){var h=function(e){data.fields[e.target.getAttribute("data-field")]=e.target.value;saveState();};inp.oninput=h;inp.onchange=h;});
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-sign-field]"),function(inp){var h=function(e){var c=e.target.getAttribute("data-sign-choice"),f=e.target.getAttribute("data-sign-field");if(!data.items[c])data.items[c]={count:"",size:"",comment:""};data.items[c][f]=e.target.value;saveState();};inp.oninput=h;inp.onchange=h;});
+  }
+
+  function renderDesign(){
+    setFooter({back:function(){go("area",state.selected.length-1);},next:function(){go("uploads");}});
+    var opts=[["Ja","Ja, komplett vorhanden","Produktionsdaten sind vorhanden."],["Teilweise","Teilweise","Logo / Corporate Design vorhanden."],["Nein","Nein","Gestaltungsunterstützung gewünscht."]];
+    screen.innerHTML='<p class="eyebrow">GESTALTUNG & DATEN</p><h1>Ist die Gestaltung bereits vorhanden?</h1><div class="design-list">'+opts.map(function(o){return '<button class="design-choice '+(state.design===o[0]?'selected':'')+'" type="button" data-design="'+o[0]+'"><strong>'+o[1]+'</strong><small>'+o[2]+'</small></button>';}).join("")+'</div>';
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-design]"),function(btn){btn.onclick=function(){state.design=btn.getAttribute("data-design");saveState();renderDesign();};});
+  }
+
+  function uploadRequirements(key){
+    var choices=state.areaData[key].choices;
+    if(key==="gebaeude" && choices.length) return ["Gesamtansicht"].concat(choices.map(function(c){return "Foto: "+c;}));
+    if(key==="beschilderung" && choices.length) return choices.map(function(c){return "Montageort: "+c;});
+    return PROJECTS[key].uploads.slice();
+  }
+
+  function renderUploads(){
+    if(!state.uploadArea || state.selected.indexOf(state.uploadArea)<0) state.uploadArea=state.selected[0]||"";
+    var key=state.uploadArea,cfg=PROJECTS[key],reqs=uploadRequirements(key);
+    setFooter({back:function(){go("design");},next:function(){go("check");}});
+    var tabs=state.selected.map(function(k){return '<button class="area-tab '+(k===key?'active':'')+'" type="button" data-upload-area="'+k+'">'+esc(PROJECTS[k].name)+'</button>';}).join("");
+    var rows=reqs.map(function(label){var meta=state.uploads[key][label];return '<div class="upload-row"><div class="upload-name"><div>'+esc(label)+'</div>'+(meta?'<div class="upload-file-name">'+esc(meta.name)+'</div>':'')+'</div><label class="upload-action">'+(meta?'✓':'+')+'<input type="file" data-upload-slot="'+esc(label)+'" accept="image/*,.pdf,.svg,.ai,.eps"></label></div>';}).join("");
+    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · PDF · SVG · AI · EPS</small><input id="extraFiles" type="file" multiple></label>';
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-area]"),function(btn){btn.onclick=function(){state.uploadArea=btn.getAttribute("data-upload-area");saveState();renderUploads();};});
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-slot]"),function(inp){inp.onchange=function(e){var file=e.target.files&&e.target.files[0];if(!file)return;var label=e.target.getAttribute("data-upload-slot");state.uploads[key][label]={name:file.name,size:file.size,type:file.type};saveState();renderUploads();};});
+    document.getElementById("extraFiles").onchange=function(e){var files=Array.prototype.slice.call(e.target.files||[]);if(!state.extraUploads[key])state.extraUploads[key]=[];files.forEach(function(f){state.extraUploads[key].push({name:f.name,size:f.size,type:f.type});});saveState();renderUploads();};
+  }
+
+  function completeness(key){var reqs=uploadRequirements(key),done=reqs.filter(function(r){return !!state.uploads[key][r];}).length;return {done:done,total:reqs.length,complete:state.areaData[key].choices.length>0&&done===reqs.length};}
+  function renderCheck(){
+    setFooter({back:function(){go("uploads");},next:function(){go("planning");}});
+    var rows=state.selected.map(function(key){var c=completeness(key);return '<div class="check-row"><span class="check-icon">'+(c.complete?'✓':'○')+'</span><span>'+esc(PROJECTS[key].name)+' · '+c.done+' / '+c.total+' Dateien</span></div>';}).join("");
+    var all=state.selected.every(function(k){return completeness(k).complete;})&&!!state.design;
+    screen.innerHTML='<p class="eyebrow">VOLLSTÄNDIGKEIT</p><h1>Fast geschafft.</h1><div class="check-list">'+rows+'<div class="check-row"><span class="check-icon">'+(state.design?'✓':'○')+'</span><span>Gestaltungsstatus</span></div></div>'+(all?'<div class="ready"><strong>✓ Alle wichtigen Angaben vorhanden</strong><p>Die Anfrage kann fortgesetzt werden.</p></div>':'<div class="alert"><strong>Einige Angaben sind noch unvollständig.</strong><p>Sie können fehlende Informationen ergänzen oder die Anfrage trotzdem fortsetzen.</p></div>');
+  }
+
+  function renderPlanning(){
+    setFooter({back:function(){go("check");},next:function(){go("summary");}});
+    var p=state.planning;
+    var budgets=["unter CHF 1\'000","CHF 1\'000–2\'500","CHF 2\'500–5\'000","CHF 5\'000–10\'000","über CHF 10\'000"].map(function(v){return '<option '+(p.budget===v?'selected':'')+'>'+v+'</option>';}).join("");
+    var timings=["Fix","Flexibel","Noch offen"].map(function(v){return '<button class="'+(p.timing===v?'selected':'')+'" type="button" data-timing="'+v+'">'+v+'</button>';}).join("");
+    screen.innerHTML='<p class="eyebrow">TERMIN & BUDGET</p><h1>Wann soll das Projekt umgesetzt werden?</h1><div class="field-grid"><div class="field"><label>Wunschdatum</label><input id="dateField" type="date" value="'+esc(p.date)+'"></div></div><div class="segment">'+timings+'</div><div class="field-grid" style="margin-top:14px"><div class="field"><label>Budgetrahmen · optional</label><select id="budgetField"><option value=""></option>'+budgets+'</select></div><div class="field"><label>Bemerkungen · optional</label><textarea id="remarksField">'+esc(p.remarks)+'</textarea></div></div>';
+    document.getElementById("dateField").onchange=function(e){p.date=e.target.value;saveState();};document.getElementById("budgetField").onchange=function(e){p.budget=e.target.value;saveState();};document.getElementById("remarksField").oninput=function(e){p.remarks=e.target.value;saveState();};
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-timing]"),function(btn){btn.onclick=function(){p.timing=btn.getAttribute("data-timing");saveState();renderPlanning();};});
+  }
+
+  function areaSummary(key){
+    var data=state.areaData[key];
+    if(key==="beschilderung"){
+      if(!data.choices.length)return "—";
+      return data.choices.map(function(choice){var item=data.items[choice]||{},parts=[];if(item.count)parts.push(item.count+" Stk.");if(item.size)parts.push(item.size+" cm");if(choice==="Sonstiges"&&item.comment&&item.comment.trim())parts.push(item.comment.trim());return parts.length?choice+": "+parts.join(" · "):choice;}).join(" | ");
+    }
+    var choices=data.choices.length?data.choices.join(", "):"—";
+    var fields=PROJECTS[key].fields.map(function(f){return data.fields[f.id]?f.label+": "+data.fields[f.id]:"";}).filter(Boolean).join(" · ");
+    return fields?choices+" · "+fields:choices;
+  }
+
+  function renderSummary(){
+    setFooter({back:function(){go("planning");},next:sendTest,nextLabel:"Anfrage senden"});
+    var meta=[state.overview.projectName,state.overview.location,state.overview.context].filter(Boolean).join(" · ")||"—";
+    var areaRows=state.selected.map(function(key){return '<div class="summary-row"><div class="summary-label">'+esc(PROJECTS[key].name)+'</div><div class="summary-value">'+esc(areaSummary(key))+'</div></div>';}).join("");
+    var timing=[state.planning.date,state.planning.timing].filter(Boolean).join(" · ")||"—";
+    screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><input id="contactName" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><input id="contactEmail" type="email" placeholder="E-Mail" value="'+esc(state.contact.email)+'"></div><div id="validation" class="validation"></div>';
+    document.getElementById("contactName").oninput=function(e){state.contact.name=e.target.value;saveState();};document.getElementById("contactEmail").oninput=function(e){state.contact.email=e.target.value;saveState();};
+  }
+
+  function sendTest(){
+    var val=document.getElementById("validation"),nameOk=state.contact.name.trim().length>=2,emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.contact.email.trim());
+    if(!nameOk||!emailOk){val.textContent=!nameOk&&!emailOk?'Bitte Name und gültige E-Mail-Adresse eingeben.':(!nameOk?'Bitte Vorname und Nachname eingeben.':'Bitte eine gültige E-Mail-Adresse eingeben.');return;}
+    val.textContent=""; if(sentDialog && sentDialog.showModal) sentDialog.showModal();
+  }
+  function exportJson(){
+    var payload={createdAt:new Date().toISOString(),project:Object.assign({},state.overview,{selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:state.planning,contact:state.contact};
+    state.selected.forEach(function(key){payload.areas[PROJECTS[key].name]={choices:state.areaData[key].choices,fields:state.areaData[key].fields,items:state.areaData[key].items,files:state.uploads[key],extraFiles:state.extraUploads[key]||[]};});
+    var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="projektanfrage-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(function(){URL.revokeObjectURL(url);},500);
+  }
+  function resetAll(){state=makeState();try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
+
+  function init(){
+    screen=document.getElementById("screen");footer=document.getElementById("footer");backBtn=document.getElementById("backBtn");nextBtn=document.getElementById("nextBtn");phaseEl=document.getElementById("progressPhase");countEl=document.getElementById("progressCount");barEl=document.getElementById("progressBar");closeBtn=document.getElementById("closeBtn");resetDialog=document.getElementById("resetDialog");sentDialog=document.getElementById("sentDialog");
+    if(!screen||!footer||!backBtn||!nextBtn||!phaseEl||!countEl||!barEl) return;
+    var fallback=document.getElementById("fallbackStartBtn");if(fallback)fallback.onclick=function(){go("select");};
+    if(closeBtn)closeBtn.onclick=function(){if(resetDialog&&resetDialog.showModal)resetDialog.showModal();else go("start");};
+    var continueBtn=document.getElementById("continueBtn"),homeBtn=document.getElementById("homeBtn"),resetBtn=document.getElementById("resetBtn"),exportBtn=document.getElementById("exportBtn"),sentCloseBtn=document.getElementById("sentCloseBtn");
+    if(continueBtn)continueBtn.onclick=function(){resetDialog.close();};if(homeBtn)homeBtn.onclick=function(){resetDialog.close();go("start");};if(resetBtn)resetBtn.onclick=resetAll;if(exportBtn)exportBtn.onclick=exportJson;if(sentCloseBtn)sentCloseBtn.onclick=function(){sentDialog.close();};
+    window.addEventListener("hashchange",function(){route=parseRoute();render();});
+    if(!location.hash) history.replaceState(null,"","#start");
+    route=parseRoute();render();
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded",init); else init();
+})();
+
+  </script>
 </body>
 </html>
