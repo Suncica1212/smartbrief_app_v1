@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_FIRST_UPLOAD_AREA -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_NAMED_FILES -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -49,7 +49,7 @@ button{cursor:pointer}
 .segment{display:grid;grid-template-columns:repeat(3,1fr);margin-top:8px;border:1px solid var(--line)}.segment button{height:38px;border:0;border-right:1px solid var(--line);background:#fff;font-size:11px}.segment button:last-child{border-right:0}.segment button.selected{background:var(--soft);font-weight:600}
 .summary{margin-top:14px;border:1px solid var(--line)}.summary-row{padding:7px 11px;border-bottom:1px solid var(--line)}.summary-row:last-child{border-bottom:0}.summary-label{color:var(--muted);font-size:7.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}.summary-value{margin-top:3px;font-size:11px;line-height:1.32}.summary-value.muted{color:#9aa1a9}.contact-grid{display:grid;gap:6px;margin-top:9px}.contact-grid input{height:38px}.validation{margin-top:8px;color:var(--danger);font-size:10px;line-height:1.4}
 .contact-grid{align-content:start}.contact-grid .field{scroll-margin-block:16px}.contact-grid input[aria-invalid="true"]{border:2px solid var(--danger)}.field-error{margin:5px 0 0;color:var(--danger);font-size:9.5px;line-height:1.4}.field-error:empty{display:none}
-.dialog{width:min(calc(100% - 36px),390px);border:1px solid var(--line);padding:0;background:#fff}.dialog::backdrop{background:rgba(17,19,21,.28)}.dialog-inner{padding:20px}.dialog-actions{display:grid;gap:7px;margin-top:18px}.dialog-actions.two{grid-template-columns:1fr 1fr}
+.upload-status{grid-column:1/-1}.upload-error{color:var(--danger)}.zip-wide{grid-column:1/-1}.zip-download{display:flex;align-items:center;justify-content:center;text-decoration:none}.zip-download[hidden]{display:none}.dialog{width:min(calc(100% - 36px),390px);border:1px solid var(--line);padding:0;background:#fff}.dialog::backdrop{background:rgba(17,19,21,.28)}.dialog-inner{padding:20px}.dialog-actions{display:grid;gap:7px;margin-top:18px}.dialog-actions.two{grid-template-columns:1fr 1fr}
 @media(max-height:700px){.app-header{padding-top:14px}.screen{padding-top:20px}.project-tile{height:98px}.project-tile img{width:44px;height:34px}h1{font-size:18px}}
 
 
@@ -145,6 +145,9 @@ button{cursor:pointer}
       <h2>Anfrage vorbereitet.</h2>
       <p class="body-copy">Die App hat die Anfrage zusammengestellt. In dieser Testversion wird noch nichts an einen Server gesendet.</p>
       <div class="dialog-actions two">
+        <button id="zipExportBtn" class="nav-button secondary zip-wide" type="button">Projekt als ZIP vorbereiten</button>
+        <a id="zipDownloadLink" class="nav-button primary zip-wide zip-download" hidden>ZIP herunterladen</a>
+        <p id="zipStatus" class="helper zip-wide" role="status"></p>
         <button id="exportBtn" class="nav-button secondary" type="button">JSON exportieren</button>
         <button id="sentCloseBtn" class="nav-button primary" type="button">Schliessen</button>
       </div>
@@ -154,7 +157,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-first-upload-area";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-named-files";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -228,6 +231,7 @@ button{cursor:pointer}
       uploads[key] = {};
     });
     return {
+      requestId:newId(),
       selected:[],
       overview:{projectName:"",location:"",context:"",contextComment:""},
       areaData:areaData,
@@ -247,6 +251,7 @@ button{cursor:pointer}
       if(!raw) return base;
       var saved = JSON.parse(raw);
       if(!saved || typeof saved !== "object") return base;
+      if(typeof saved.requestId === "string" && /^[a-z0-9-]{8,80}$/i.test(saved.requestId))base.requestId=saved.requestId;
       base.selected = Array.isArray(saved.selected) ? saved.selected.filter(function(k){return PROJECT_ORDER.indexOf(k) >= 0;}) : [];
       base.overview = Object.assign(base.overview, saved.overview || {});
       if(typeof base.overview.contextComment !== "string") base.overview.contextComment = "";
@@ -267,6 +272,7 @@ button{cursor:pointer}
         if(saved.uploads && saved.uploads[key] && typeof saved.uploads[key] === "object") base.uploads[key] = Object.assign({}, saved.uploads[key]);
         if(saved.extraUploads && Array.isArray(saved.extraUploads[key])) base.extraUploads[key] = saved.extraUploads[key].slice();
       });
+      normaliseUploadNames(base);
       return base;
     }catch(err){
       return base;
@@ -274,7 +280,8 @@ button{cursor:pointer}
   }
 
   function saveState(){
-    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(err){}
+    invalidateArchive();
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }catch(err){ return false; }
   }
 
   function esc(value){
@@ -345,7 +352,9 @@ button{cursor:pointer}
     if(!show) return;
     backBtn.textContent = options.backLabel || "Zurück";
     nextBtn.textContent = options.nextLabel || "Weiter";
-    nextBtn.disabled = !!options.disabled;
+    nextBtn.disabled = !!options.disabled || uploadBusy;
+    backBtn.disabled = uploadBusy;
+    if(closeBtn)closeBtn.disabled=uploadBusy;
     backBtn.onclick = options.back || null;
     nextBtn.onclick = options.disabled ? null : (options.next || null);
   }
@@ -467,19 +476,200 @@ button{cursor:pointer}
     return PROJECTS[key].uploads.slice();
   }
 
+  function newId(){
+    if(window.crypto && window.crypto.randomUUID)return window.crypto.randomUUID();
+    return Date.now().toString(36)+"-"+Math.random().toString(36).slice(2)+"-"+Math.random().toString(36).slice(2);
+  }
+
+  function fileSlug(value){
+    return String(value||"").toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"").slice(0,70).replace(/_+$/g,"")||"datei";
+  }
+
+  function fileExtension(file){
+    var original=file.originalName||file.name||"",match=original.match(/\.([a-z0-9]{1,10})$/i),ext=match?match[1].toLowerCase():"";
+    var formats={"image/jpeg":["jpg","jpeg","jpe"],"image/png":["png"],"image/heic":["heic"],"image/heif":["heif"],"image/webp":["webp"],"image/gif":["gif"],"image/tiff":["tif","tiff"],"image/avif":["avif"],"image/svg+xml":["svg"],"application/pdf":["pdf"]};
+    var known=formats[String(file.type||"").toLowerCase()];
+    if(known && known.indexOf(ext)<0)ext=known[0];
+    return ext?"."+ext:"";
+  }
+
+  function uploadBaseName(key,label,index){
+    var views={"Vorderseite":"vorne","Rückseite":"hinten","Linke Seite":"linke_seite","Rechte Seite":"rechte_seite"};
+    var suffix=label?(key==="fahrzeug"&&views[label]?views[label]:fileSlug(label.replace(/^(Foto|Montageort):\s*/,""))):"zusatz_"+String(index+1).padStart(2,"0");
+    return fileSlug(key)+"_"+suffix;
+  }
+
+  function uniqueUploadName(base,extension,used){
+    var candidate=base+extension,n=2;
+    while(used.indexOf(candidate)>=0)candidate=base+"_"+String(n++).padStart(2,"0")+extension;
+    used.push(candidate);
+    return candidate;
+  }
+
+  function normaliseUploadNames(target){
+    var used=[];
+    PROJECT_ORDER.forEach(function(key){
+      Object.keys(target.uploads[key]).forEach(function(label){
+        var meta=target.uploads[key][label];if(!meta||typeof meta!=="object"){delete target.uploads[key][label];return;}
+        meta.originalName=meta.originalName||meta.name||"";
+        meta.name=uniqueUploadName(uploadBaseName(key,label),fileExtension(meta),used);
+      });
+      (target.extraUploads[key]||[]).forEach(function(meta,index){
+        meta.originalName=meta.originalName||meta.name||"";
+        meta.name=uniqueUploadName(uploadBaseName(key,null,index),fileExtension(meta),used);
+      });
+    });
+  }
+
+  function projectFolder(){
+    return fileSlug(state.overview.projectName||"projektanfrage")+"_"+state.requestId;
+  }
+
+  var filesDbPromise=null,uploadBusy=false,uploadNotice="",uploadNoticeError=false,archiveRevision=0,zipObjectUrl="",zipLibraryPromise=null;
+
+  function openFilesDb(){
+    if(filesDbPromise)return filesDbPromise;
+    filesDbPromise=new Promise(function(resolve,reject){
+      if(!window.indexedDB){reject(new Error("Die lokale Dateiablage ist in diesem Browser nicht verfügbar."));return;}
+      var request=window.indexedDB.open("smartbrief-files",1);
+      request.onupgradeneeded=function(){var db=request.result;var files=db.createObjectStore("files",{keyPath:"id"});files.createIndex("requestId","requestId",{unique:false});};
+      request.onsuccess=function(){var db=request.result;db.onversionchange=function(){db.close();filesDbPromise=null;};resolve(db);};
+      request.onerror=function(){filesDbPromise=null;reject(request.error);};
+      request.onblocked=function(){filesDbPromise=null;reject(new Error("Bitte andere SmartBrief-Tabs schliessen und erneut versuchen."));};
+    });
+    return filesDbPromise;
+  }
+
+  async function fileStore(action,value){
+    var db=await openFilesDb();
+    return new Promise(function(resolve,reject){
+      var tx=db.transaction("files",action==="get"?"readonly":"readwrite"),result;
+      var request=tx.objectStore("files")[action](value);
+      request.onsuccess=function(){result=request.result;};
+      tx.oncomplete=function(){resolve(result);};
+      tx.onerror=tx.onabort=function(){reject(tx.error||request.error||new Error("Datei konnte nicht gespeichert werden."));};
+    });
+  }
+
+  async function deleteRequestFiles(requestId){
+    var db=await openFilesDb();
+    return new Promise(function(resolve,reject){
+      var tx=db.transaction("files","readwrite"),request=tx.objectStore("files").index("requestId").openCursor(IDBKeyRange.only(requestId));
+      request.onsuccess=function(){var cursor=request.result;if(cursor){cursor.delete();cursor.continue();}};
+      tx.oncomplete=resolve;tx.onerror=tx.onabort=function(){reject(tx.error);};
+    });
+  }
+
+  async function saveUploadFile(key,label,file,extraIndex){
+    var owner=state,requestId=owner.requestId;
+    if(!owner.extraUploads[key])owner.extraUploads[key]=[];
+    var list=owner.extraUploads[key],index=extraIndex==null?list.length:extraIndex;
+    var previous=label?owner.uploads[key][label]:list[index];
+    var id=newId(),meta={fileId:id,name:"",originalName:file.name,size:file.size,type:file.type,lastModified:file.lastModified};
+    var used=[];
+    PROJECT_ORDER.forEach(function(k){Object.keys(owner.uploads[k]).forEach(function(slot){var m=owner.uploads[k][slot];if(m!==previous)used.push(m.name);});(owner.extraUploads[k]||[]).forEach(function(m){if(m!==previous)used.push(m.name);});});
+    meta.name=uniqueUploadName(uploadBaseName(key,label,index),fileExtension(meta),used);
+    var renamed=new File([file],meta.name,{type:file.type,lastModified:file.lastModified});
+    await fileStore("put",{id:id,requestId:requestId,file:renamed});
+    if(state!==owner){await fileStore("delete",id);throw new Error("Die Anfrage wurde inzwischen neu gestartet. Bitte Datei erneut auswählen.");}
+    if(label)owner.uploads[key][label]=meta;else list[index]=meta;
+    if(!saveState()){
+      if(label){if(previous)owner.uploads[key][label]=previous;else delete owner.uploads[key][label];}
+      else if(previous)list[index]=previous;else list.pop();
+      await fileStore("delete",id).catch(function(){});
+      throw new Error("Die Angaben konnten nicht gespeichert werden. Bitte Speicherplatz freigeben und erneut versuchen.");
+    }
+    if(previous&&previous.fileId)await fileStore("delete",previous.fileId).catch(function(){});
+    return meta;
+  }
+
+  async function addUploadFiles(key,label,files,extraIndex){
+    if(uploadBusy||!files.length)return;
+    uploadBusy=true;uploadNotice="Dateien werden gespeichert …";uploadNoticeError=false;renderUploads();
+    var done=0;
+    try{
+      for(var i=0;i<files.length;i++){await saveUploadFile(key,label,files[i],extraIndex);done++;}
+      uploadNotice=done===1?"Datei gespeichert.":done+" Dateien gespeichert.";
+    }catch(error){
+      uploadNoticeError=true;uploadNotice=(done?done+" Dateien gespeichert. ":"")+"Weitere Speicherung nicht möglich. "+(error.message||"Bitte erneut versuchen.");
+    }finally{
+      uploadBusy=false;
+      if(route.name==="uploads")renderUploads();else render();
+    }
+  }
+
+  function attachmentRows(key){
+    return uploadRequirements(key).map(function(label){return {label:label,meta:state.uploads[key][label]};}).concat((state.extraUploads[key]||[]).map(function(meta,index){return {label:"Zusatzdatei "+String(index+1).padStart(2,"0"),meta:meta,extraIndex:index};}));
+  }
+
+  function selectedAttachments(){
+    var files=[];
+    state.selected.forEach(function(key){attachmentRows(key).forEach(function(row){if(row.meta)files.push({area:key,label:row.label,meta:row.meta});});});
+    return files;
+  }
+
+  function invalidateArchive(){
+    archiveRevision++;
+    if(zipObjectUrl){URL.revokeObjectURL(zipObjectUrl);zipObjectUrl="";}
+    var link=document.getElementById("zipDownloadLink");if(link){link.hidden=true;link.removeAttribute("href");}
+  }
+
+  function loadZipLibrary(){
+    if(window.JSZip)return Promise.resolve(window.JSZip);
+    if(zipLibraryPromise)return zipLibraryPromise;
+    zipLibraryPromise=new Promise(function(resolve,reject){
+      var script=document.createElement("script");script.src="assets/vendor/jszip-3.10.1.min.js";
+      script.onload=function(){if(window.JSZip)resolve(window.JSZip);else{zipLibraryPromise=null;reject(new Error("ZIP-Funktion konnte nicht geladen werden. Bitte Seite neu laden."));}};
+      script.onerror=function(){zipLibraryPromise=null;script.remove();reject(new Error("ZIP-Funktion konnte nicht geladen werden. Bitte Verbindung prüfen und erneut versuchen."));};
+      document.head.appendChild(script);
+    });
+    return zipLibraryPromise;
+  }
+
+  async function buildProjectZip(payload,attachments){
+    var Zip=await loadZipLibrary(),zip=new Zip(),folder=payload.project.folder,missing=[];
+    zip.file(folder+"/projektanfrage.json",JSON.stringify(payload,null,2));
+    for(var i=0;i<attachments.length;i++){
+      var meta=attachments[i].meta,record=meta.fileId?await fileStore("get",meta.fileId):null;
+      if(!record||record.requestId!==payload.project.requestId||!record.file){missing.push(meta.name);continue;}
+      zip.file(folder+"/"+meta.name,record.file.arrayBuffer(),{compression:"STORE"});
+    }
+    if(missing.length)throw new Error("Bitte diese Dateien im Upload-Bereich erneut hinzufügen: "+missing.join(", ")+".");
+    return zip.generateAsync({type:"blob",compression:"STORE"});
+  }
+
+  async function prepareProjectZip(){
+    var button=document.getElementById("zipExportBtn"),status=document.getElementById("zipStatus"),link=document.getElementById("zipDownloadLink");
+    if(button.disabled)return;
+    invalidateArchive();
+    var revision=archiveRevision,payload=projectPayload(),attachments=selectedAttachments();
+    button.disabled=true;status.textContent="Projektdateien werden zusammengestellt …";
+    try{
+      var archive=await buildProjectZip(payload,attachments);
+      if(revision!==archiveRevision)throw new Error("Die Anfrage wurde geändert. Bitte ZIP erneut vorbereiten.");
+      zipObjectUrl=URL.createObjectURL(archive);link.href=zipObjectUrl;link.download=payload.project.folder+".zip";link.hidden=false;
+      status.textContent=attachments.length+" Dateien und Projektangaben sind bereit.";
+    }catch(error){status.textContent=error.message||"ZIP konnte nicht erstellt werden. Bitte erneut versuchen.";}
+    finally{button.disabled=false;}
+  }
+
   function renderUploads(){
     if(!state.uploadArea || state.selected.indexOf(state.uploadArea)<0) state.uploadArea=state.selected[0]||"";
     var key=state.uploadArea,cfg=PROJECTS[key],reqs=uploadRequirements(key);
     setFooter({back:function(){go("design");},next:function(){go("check");}});
     var tabs=state.selected.map(function(k){return '<button class="area-tab '+(k===key?'active':'')+'" type="button" data-upload-area="'+k+'">'+esc(PROJECTS[k].name)+'</button>';}).join("");
-    var rows=reqs.map(function(label){var meta=state.uploads[key][label];return '<div class="upload-row"><div class="upload-name"><div>'+esc(label)+'</div>'+(meta?'<div class="upload-file-name">'+esc(meta.name)+'</div>':'')+'</div><label class="upload-action">'+(meta?'✓':'+')+'<input type="file" data-upload-slot="'+esc(label)+'" accept="image/*,.pdf,.svg,.ai,.eps"></label></div>';}).join("");
-    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · PDF · SVG · AI · EPS</small><input id="extraFiles" type="file" multiple></label>';
-    Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-area]"),function(btn){btn.onclick=function(){state.uploadArea=btn.getAttribute("data-upload-area");saveState();renderUploads();};});
-    Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-slot]"),function(inp){inp.onchange=function(e){var file=e.target.files&&e.target.files[0];if(!file)return;var label=e.target.getAttribute("data-upload-slot");state.uploads[key][label]={name:file.name,size:file.size,type:file.type};saveState();renderUploads();};});
-    document.getElementById("extraFiles").onchange=function(e){var files=Array.prototype.slice.call(e.target.files||[]);if(!state.extraUploads[key])state.extraUploads[key]=[];files.forEach(function(f){state.extraUploads[key].push({name:f.name,size:f.size,type:f.type});});saveState();renderUploads();};
+    var rows=attachmentRows(key).map(function(row){
+      var meta=row.meta,missing=meta&&!meta.fileId;
+      return '<div class="upload-row"><div class="upload-name"><div>'+esc(row.label)+'</div>'+(meta?'<div class="upload-file-name">'+esc(meta.name)+'</div>':'')+(missing?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action">'+(meta&&!missing?'✓':'+')+'<input type="file" aria-label="'+esc(row.label)+': Datei '+(meta?'ersetzen':'hinzufügen')+'" '+(row.extraIndex==null?'data-upload-slot="'+esc(row.label)+'"':'data-upload-extra="'+row.extraIndex+'"')+' accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
+    }).join("");
+    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · PDF · SVG · AI · EPS</small><input id="extraFiles" type="file" multiple aria-label="Weitere Fotos oder Dateien hinzufügen"'+(uploadBusy?' disabled':'')+'></label><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-area]"),function(btn){btn.disabled=uploadBusy;btn.onclick=function(){uploadNotice="";uploadNoticeError=false;state.uploadArea=btn.getAttribute("data-upload-area");saveState();renderUploads();};});
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-slot]"),function(inp){inp.onchange=function(e){var file=e.target.files&&e.target.files[0];if(file)addUploadFiles(key,e.target.getAttribute("data-upload-slot"),[file]);};});
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-extra]"),function(inp){inp.onchange=function(e){var file=e.target.files&&e.target.files[0];if(file)addUploadFiles(key,null,[file],Number(e.target.getAttribute("data-upload-extra")));};});
+    document.getElementById("extraFiles").onchange=function(e){addUploadFiles(key,null,Array.prototype.slice.call(e.target.files||[]));};
   }
 
-  function completeness(key){var reqs=uploadRequirements(key),done=reqs.filter(function(r){return !!state.uploads[key][r];}).length;return {done:done,total:reqs.length,complete:state.areaData[key].choices.length>0&&done===reqs.length};}
+  function completeness(key){var reqs=uploadRequirements(key),done=reqs.filter(function(r){return !!(state.uploads[key][r]&&state.uploads[key][r].fileId);}).length;return {done:done,total:reqs.length,complete:state.areaData[key].choices.length>0&&done===reqs.length};}
   function renderCheck(){
     setFooter({back:function(){go("uploads");},next:function(){go("planning");}});
     var rows=state.selected.map(function(key){var c=completeness(key);return '<button class="check-row check-link" type="button" data-check-area="'+esc(key)+'" title="Dateien ansehen oder ergänzen"><span class="check-icon" aria-hidden="true">'+(c.complete?'✓':'○')+'</span><span>'+esc(PROJECTS[key].name)+' · '+c.done+' / '+c.total+' Dateien</span><span class="check-arrow" aria-hidden="true">›</span></button>';}).join("");
@@ -568,15 +758,28 @@ button{cursor:pointer}
       firstInvalid.closest(".field").scrollIntoView({behavior:"auto",block:"center",inline:"nearest"});
       return;
     }
+    invalidateArchive();
+    document.getElementById("zipStatus").textContent="";
     if(sentDialog && sentDialog.showModal) sentDialog.showModal();
   }
+  function projectPayload(){
+    var payload={createdAt:new Date().toISOString(),project:Object.assign({},state.overview,{requestId:state.requestId,folder:projectFolder(),contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:Object.assign({},state.planning),contact:Object.assign({},state.contact)};
+    state.selected.forEach(function(key){
+      var data=state.areaData[key],items=Object.assign({},data.items),files={};
+      if(items.Sonstiges && data.choices.indexOf("Sonstiges")<0)items.Sonstiges=Object.assign({},items.Sonstiges,{comment:""});
+      uploadRequirements(key).forEach(function(label){if(state.uploads[key][label])files[label]=state.uploads[key][label];});
+      payload.areas[PROJECTS[key].name]={choices:data.choices,fields:data.fields,items:items,otherComment:activeOtherComment(data),files:files,extraFiles:state.extraUploads[key]||[]};
+    });
+    return payload;
+  }
+
   function exportJson(){
     if(state.planning.date && state.planning.date<localToday()){go("planning");return;}
-    var payload={createdAt:new Date().toISOString(),project:Object.assign({},state.overview,{contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:state.planning,contact:state.contact};
-    state.selected.forEach(function(key){var data=state.areaData[key],items=Object.assign({},data.items);if(items.Sonstiges && data.choices.indexOf("Sonstiges")<0)items.Sonstiges=Object.assign({},items.Sonstiges,{comment:""});payload.areas[PROJECTS[key].name]={choices:data.choices,fields:data.fields,items:items,otherComment:activeOtherComment(data),files:state.uploads[key],extraFiles:state.extraUploads[key]||[]};});
-    var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="projektanfrage-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(function(){URL.revokeObjectURL(url);},500);
+    var payload=projectPayload();
+    var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=projectFolder()+".json";a.click();setTimeout(function(){URL.revokeObjectURL(url);},10000);
   }
-  function resetAll(){state=makeState();try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
+
+  function resetAll(){if(uploadBusy)return;var previousId=state.requestId;invalidateArchive();state=makeState();uploadNotice="";deleteRequestFiles(previousId).catch(function(){});try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
 
   function init(){
     screen=document.getElementById("screen");footer=document.getElementById("footer");backBtn=document.getElementById("backBtn");nextBtn=document.getElementById("nextBtn");phaseEl=document.getElementById("progressPhase");countEl=document.getElementById("progressCount");barEl=document.getElementById("progressBar");closeBtn=document.getElementById("closeBtn");resetDialog=document.getElementById("resetDialog");sentDialog=document.getElementById("sentDialog");
@@ -584,6 +787,8 @@ button{cursor:pointer}
     var fallback=document.getElementById("fallbackStartBtn");if(fallback)fallback.onclick=function(){go("select");};
     if(closeBtn)closeBtn.onclick=function(){if(resetDialog&&resetDialog.showModal)resetDialog.showModal();else go("start");};
     var continueBtn=document.getElementById("continueBtn"),homeBtn=document.getElementById("homeBtn"),resetBtn=document.getElementById("resetBtn"),exportBtn=document.getElementById("exportBtn"),sentCloseBtn=document.getElementById("sentCloseBtn");
+    document.getElementById("zipExportBtn").onclick=prepareProjectZip;
+    saveState();
     if(continueBtn)continueBtn.onclick=function(){resetDialog.close();};if(homeBtn)homeBtn.onclick=function(){resetDialog.close();go("start");};if(resetBtn)resetBtn.onclick=resetAll;if(exportBtn)exportBtn.onclick=exportJson;if(sentCloseBtn)sentCloseBtn.onclick=function(){sentDialog.close();};
     window.addEventListener("hashchange",function(){route=parseRoute();render();});
     if(!location.hash) history.replaceState(null,"","#start");
