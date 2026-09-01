@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_MULTI_VIEW_FILES -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_EMAIL_TEST -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -143,11 +143,20 @@ button{cursor:pointer}
     <div class="dialog-inner">
       <p class="eyebrow">TESTMODUS</p>
       <h2>Anfrage vorbereitet.</h2>
-      <p class="body-copy">Die App hat die Anfrage zusammengestellt. In dieser Testversion wird noch nichts an einen Server gesendet.</p>
+      <p class="body-copy">Die App hat die Anfrage zusammengestellt. Es wurde noch nichts versendet.</p>
       <div class="dialog-actions two">
         <button id="zipExportBtn" class="nav-button secondary zip-wide" type="button">Projekt als ZIP vorbereiten</button>
         <a id="zipDownloadLink" class="nav-button primary zip-wide zip-download" hidden>ZIP herunterladen</a>
         <p id="zipStatus" class="helper zip-wide" role="status"></p>
+        <form id="emailTestForm" class="zip-wide" method="POST" enctype="multipart/form-data" hidden>
+          <p class="body-copy">Empfangstest: Das Projekt-ZIP wird über FormSubmit an die Testadresse geschickt. Maximal 10 MB. Beim ersten Versand bitte die Bestätigungs-E-Mail von FormSubmit öffnen.</p>
+          <label for="testRecipient">Freigegebene Testadresse · E-Mail</label>
+          <input id="testRecipient" type="email" required autocomplete="off" placeholder="E-Mail-Adresse für den Test">
+          <input id="emailTestAttachment" type="file" name="attachment" hidden>
+          <div id="emailTestFields"></div>
+          <p id="emailTestStatus" class="helper" role="status">Bitte zuerst das Projekt als ZIP vorbereiten.</p>
+          <button id="emailTestSend" class="nav-button primary" type="submit" disabled>Test-ZIP per E-Mail senden</button>
+        </form>
         <button id="exportBtn" class="nav-button secondary" type="button">JSON exportieren</button>
         <button id="sentCloseBtn" class="nav-button primary" type="button">Schliessen</button>
       </div>
@@ -157,7 +166,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-multi-view-files";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-email-test";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -621,6 +630,10 @@ button{cursor:pointer}
 
   function invalidateArchive(){
     archiveRevision++;
+    var testButton=document.getElementById("emailTestSend"),testFile=document.getElementById("emailTestAttachment");
+    if(testButton)testButton.disabled=true;
+    if(testFile)testFile.value="";
+    var testStatus=document.getElementById("emailTestStatus");if(testStatus)testStatus.textContent="Bitte zuerst das Projekt als ZIP vorbereiten.";
     if(zipObjectUrl){URL.revokeObjectURL(zipObjectUrl);zipObjectUrl="";}
     var link=document.getElementById("zipDownloadLink");if(link){link.hidden=true;link.removeAttribute("href");}
   }
@@ -660,8 +673,35 @@ button{cursor:pointer}
       if(revision!==archiveRevision)throw new Error("Die Anfrage wurde geändert. Bitte ZIP erneut vorbereiten.");
       zipObjectUrl=URL.createObjectURL(archive);link.href=zipObjectUrl;link.download=payload.project.folder+".zip";link.hidden=false;
       status.textContent=attachments.length+" Dateien und Projektangaben sind bereit.";
+      prepareEmailTest(archive,payload,attachments);
     }catch(error){status.textContent=error.message||"ZIP konnte nicht erstellt werden. Bitte erneut versuchen.";}
     finally{button.disabled=false;}
+  }
+
+  async function approvedTestRecipient(value){
+    var email=value.trim().toLowerCase();
+    var digest=await window.crypto.subtle.digest("SHA-256",new TextEncoder().encode(email));
+    var hex=Array.from(new Uint8Array(digest)).map(function(byte){return byte.toString(16).padStart(2,"0");}).join("");
+    // This test is restricted to the single recipient explicitly approved by the owner.
+    if(hex!=="3e6219ae8caae3a4a12ecc7cd5f4e73c7ac8d57b46961c47cac7e19504e3aff3")throw new Error("Bitte die freigegebene Testadresse verwenden. Andere Empfänger sind für diesen Test gesperrt.");
+    return email;
+  }
+
+  function prepareEmailTest(archive,payload,attachments){
+    var form=document.getElementById("emailTestForm");
+    if(!form||form.hidden)return;
+    var status=document.getElementById("emailTestStatus"),button=document.getElementById("emailTestSend");
+    button.disabled=true;
+    if(archive.size>10000000){status.textContent="Das ZIP ist grösser als 10 MB und kann mit diesem Testdienst nicht verschickt werden. Bitte für den Empfangstest weniger Dateien verwenden. Der ZIP-Download enthält weiterhin alle Dateien.";return;}
+    try{
+      var transfer=new DataTransfer();transfer.items.add(new File([archive],payload.project.folder+".zip",{type:"application/zip"}));
+      document.getElementById("emailTestAttachment").files=transfer.files;
+      var fields=document.getElementById("emailTestFields");fields.textContent="";
+      var values={_subject:"SmartBrief Empfangstest – "+(payload.project.projectName||"Projektanfrage"),_template:"table",name:payload.contact.name,email:payload.contact.email,Projekt:payload.project.projectName||"Projektanfrage",Anfragekennung:payload.project.requestId,Dateien:attachments.map(function(f){return f.meta.name;}).join("\n"),Hinweis:"Empfangstest mit Projekt-ZIP. Bitte ZIP entpacken und alle aufgeführten Dateien prüfen."};
+      Object.keys(values).forEach(function(key){var input=document.createElement("input");input.type="hidden";input.name=key;input.value=values[key];fields.appendChild(input);});
+      status.textContent=attachments.length+" Dateien im ZIP bereit ("+(archive.size/1000000).toFixed(2)+" MB). Nach dem Klick öffnet sich FormSubmit. Bitte dort die Versand- oder Aktivierungsanzeige beachten.";
+      button.disabled=false;
+    }catch(error){status.textContent="Dieser Browser kann das ZIP nicht direkt an das Formular übergeben. Bitte das ZIP herunterladen und den Test in einem aktuellen Browser wiederholen.";}
   }
 
   function renderUploads(){
@@ -802,6 +842,22 @@ button{cursor:pointer}
     if(closeBtn)closeBtn.onclick=function(){if(resetDialog&&resetDialog.showModal)resetDialog.showModal();else go("start");};
     var continueBtn=document.getElementById("continueBtn"),homeBtn=document.getElementById("homeBtn"),resetBtn=document.getElementById("resetBtn"),exportBtn=document.getElementById("exportBtn"),sentCloseBtn=document.getElementById("sentCloseBtn");
     document.getElementById("zipExportBtn").onclick=prepareProjectZip;
+    var emailForm=document.getElementById("emailTestForm");
+    emailForm.hidden=new URLSearchParams(location.search).get("versandtest")!=="1";
+    emailForm.onsubmit=async function(e){
+      e.preventDefault();
+      var recipient=document.getElementById("testRecipient"),attachment=document.getElementById("emailTestAttachment"),button=document.getElementById("emailTestSend"),status=document.getElementById("emailTestStatus");
+      recipient.value=recipient.value.trim();
+      if(!recipient.checkValidity()||!attachment.files.length||button.disabled){recipient.reportValidity();return;}
+      var revision=archiveRevision;button.disabled=true;
+      try{
+        var target=await approvedTestRecipient(recipient.value);
+        if(revision!==archiveRevision||!attachment.files.length)throw new Error("Bitte das ZIP erneut vorbereiten.");
+        emailForm.action="https://formsubmit.co/"+encodeURIComponent(target);
+        status.textContent="Test-ZIP wird an FormSubmit übergeben. Bitte die folgende Anzeige beachten.";
+        HTMLFormElement.prototype.submit.call(emailForm);
+      }catch(error){status.textContent=error.message||"Testversand konnte nicht gestartet werden.";button.disabled=!attachment.files.length;}
+    };
     saveState();
     if(continueBtn)continueBtn.onclick=function(){resetDialog.close();};if(homeBtn)homeBtn.onclick=function(){resetDialog.close();go("start");};if(resetBtn)resetBtn.onclick=resetAll;if(exportBtn)exportBtn.onclick=exportJson;if(sentCloseBtn)sentCloseBtn.onclick=function(){sentDialog.close();};
     window.addEventListener("hashchange",function(){route=parseRoute();render();});
