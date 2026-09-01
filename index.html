@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_EMAIL_TEST -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_PDF_REQUEST -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -166,7 +166,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-email-test";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-pdf-request";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -650,9 +650,75 @@ button{cursor:pointer}
     return zipLibraryPromise;
   }
 
+  function pdfSafeText(value){
+    return String(value==null?"":value).replace(/[–—]/g,"-").replace(/’/g,"'").replace(/“|”/g,'"').replace(/…/g,"...").replace(/✓/g,"OK").replace(/[^\x20-\xFF]/g,"?");
+  }
+
+  function pdfFieldLabel(key){
+    var labels={projectName:"Projektname",location:"Standort",context:"Projektart / Anlass",contextComment:"Kommentar",date:"Wunschdatum",timing:"Terminart",budget:"Budgetrahmen",remarks:"Bemerkungen",name:"Vorname und Nachname",email:"E-Mail",count:"Anzahl",size:"Grösse",comment:"Kommentar",model:"Marke / Modell",same:"Fahrzeuge baugleich",floors:"Anzahl Stockwerke",lifts:"Anzahl Lifte",event:"Event / Messe",space:"Standfläche",description:"Kurzbeschrieb"};
+    return labels[key]||String(key).replace(/([a-z])([A-Z])/g,"$1 $2").replace(/^./,function(c){return c.toUpperCase();});
+  }
+
+  function projectPdfRows(payload){
+    var rows=[{text:"SmartBrief Projektanfrage",style:"title"},{text:"Erstellt: "+new Date(payload.createdAt).toLocaleString("de-CH"),style:"muted"},{text:"Projekt",style:"heading"}];
+    ["projectName","location","context","contextComment"].forEach(function(key){var value=payload.project[key];if(value)rows.push({text:pdfFieldLabel(key)+": "+value});});
+    rows.push({text:"Anfragekennung: "+payload.project.requestId});
+    Object.keys(payload.areas).forEach(function(areaName){
+      var area=payload.areas[areaName];rows.push({text:areaName,style:"heading"});
+      if(area.choices&&area.choices.length)rows.push({text:"Auswahl: "+area.choices.join(", ")});
+      Object.keys(area.fields||{}).forEach(function(key){if(area.fields[key])rows.push({text:pdfFieldLabel(key)+": "+area.fields[key]});});
+      Object.keys(area.items||{}).forEach(function(name){var item=area.items[name]||{},parts=[];Object.keys(item).forEach(function(key){if(item[key])parts.push(pdfFieldLabel(key)+": "+item[key]);});if(parts.length)rows.push({text:name+" - "+parts.join("; ")});});
+      if(area.otherComment)rows.push({text:"Sonstiges: "+area.otherComment});
+      Object.keys(area.files||{}).forEach(function(label){var names=area.files[label].map(function(file){return file.name;});if(names.length)rows.push({text:label+": "+names.join(", "),style:"file"});});
+      if(area.extraFiles&&area.extraFiles.length)rows.push({text:"Zusätzliche Dateien: "+area.extraFiles.map(function(file){return file.name;}).join(", "),style:"file"});
+    });
+    rows.push({text:"Planung",style:"heading"});
+    if(payload.design)rows.push({text:"Gestaltung: "+payload.design});
+    Object.keys(payload.planning||{}).forEach(function(key){if(payload.planning[key])rows.push({text:pdfFieldLabel(key)+": "+payload.planning[key]});});
+    rows.push({text:"Kontakt",style:"heading"});
+    Object.keys(payload.contact||{}).forEach(function(key){if(payload.contact[key])rows.push({text:pdfFieldLabel(key)+": "+payload.contact[key]});});
+    return rows;
+  }
+
+  function wrapPdfText(text,max){
+    var words=pdfSafeText(text).split(/\s+/),lines=[],line="";
+    words.forEach(function(word){
+      while(word.length>max){if(line){lines.push(line);line="";}lines.push(word.slice(0,max));word=word.slice(max);}
+      if(!word)return;
+      if(!line)line=word;else if((line+" "+word).length<=max)line+=" "+word;else{lines.push(line);line=word;}
+    });
+    if(line)lines.push(line);return lines.length?lines:[""];
+  }
+
+  function pdfLiteral(text){return pdfSafeText(text).replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)");}
+  function latinBytes(text){var bytes=new Uint8Array(text.length);for(var i=0;i<text.length;i++)bytes[i]=text.charCodeAt(i)&255;return bytes;}
+
+  function buildProjectPdf(payload){
+    var pages=[],current=[],y=792;
+    projectPdfRows(payload).forEach(function(row){
+      var style=row.style||"body",size=style==="title"?20:(style==="heading"?13:10),font=(style==="title"||style==="heading")?"F2":"F1",max=size>=18?42:(size>=13?64:92);
+      if(style==="heading")y-=8;
+      wrapPdfText(row.text,max).forEach(function(line){
+        if(y<54){pages.push(current);current=[];y=792;}
+        current.push("BT /"+font+" "+size+" Tf 50 "+y+" Td ("+pdfLiteral(line)+") Tj ET");y-=size+5;
+      });
+      if(style==="title")y-=8;
+    });
+    if(current.length||!pages.length)pages.push(current);
+    var objects=[null,"<< /Type /Catalog /Pages 2 0 R >>","", "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>","<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>"],kids=[];
+    pages.forEach(function(commands){var pageNo=objects.length,contentNo=pageNo+1,stream=commands.join("\n");kids.push(pageNo+" 0 R");objects.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents "+contentNo+" 0 R >>");objects.push("<< /Length "+latinBytes(stream).length+" >>\nstream\n"+stream+"\nendstream");});
+    objects[2]="<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+pages.length+" >>";
+    var parts=[latinBytes("%PDF-1.4\n%âãÏÓ\n")],offsets=[0],length=parts[0].length;
+    for(var i=1;i<objects.length;i++){offsets[i]=length;var part=latinBytes(i+" 0 obj\n"+objects[i]+"\nendobj\n");parts.push(part);length+=part.length;}
+    var xref=length,tail="xref\n0 "+objects.length+"\n0000000000 65535 f \n";
+    for(var j=1;j<objects.length;j++)tail+=String(offsets[j]).padStart(10,"0")+" 00000 n \n";
+    tail+="trailer\n<< /Size "+objects.length+" /Root 1 0 R >>\nstartxref\n"+xref+"\n%%EOF";parts.push(latinBytes(tail));
+    var output=new Uint8Array(length+parts[parts.length-1].length),at=0;parts.forEach(function(part){output.set(part,at);at+=part.length;});return output;
+  }
+
   async function buildProjectZip(payload,attachments){
     var Zip=await loadZipLibrary(),zip=new Zip(),folder=payload.project.folder,missing=[];
-    zip.file(folder+"/projektanfrage.json",JSON.stringify(payload,null,2));
+    zip.file(folder+"/projektanfrage.pdf",buildProjectPdf(payload),{binary:true,compression:"STORE"});
     for(var i=0;i<attachments.length;i++){
       var meta=attachments[i].meta,record=meta.fileId?await fileStore("get",meta.fileId):null;
       if(!record||record.requestId!==payload.project.requestId||!record.file){missing.push(meta.name);continue;}
@@ -667,7 +733,7 @@ button{cursor:pointer}
     if(button.disabled)return;
     invalidateArchive();
     var revision=archiveRevision,payload=projectPayload(),attachments=selectedAttachments();
-    button.disabled=true;status.textContent="Projektdateien werden zusammengestellt …";
+    button.disabled=true;status.textContent="PDF und Projektdateien werden zusammengestellt …";
     try{
       var archive=await buildProjectZip(payload,attachments);
       if(revision!==archiveRevision)throw new Error("Die Anfrage wurde geändert. Bitte ZIP erneut vorbereiten.");
