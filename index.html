@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_COMPACT_FIELD_ERRORS -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_FIRST_UPLOAD_AREA -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -154,7 +154,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-compact-field-errors";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-first-upload-area";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -454,7 +454,7 @@ button{cursor:pointer}
   }
 
   function renderDesign(){
-    setFooter({back:function(){go("area",state.selected.length-1);},next:function(){go("uploads");}});
+    setFooter({back:function(){go("area",state.selected.length-1);},next:function(){state.uploadArea=state.selected[0]||"";saveState();go("uploads");}});
     var opts=[["Ja","Ja, komplett vorhanden","Produktionsdaten sind vorhanden."],["Teilweise","Teilweise","Logo / Corporate Design vorhanden."],["Nein","Nein","Gestaltungsunterstützung gewünscht."]];
     screen.innerHTML='<p class="eyebrow">GESTALTUNG & DATEN</p><h1>Ist die Gestaltung bereits vorhanden?</h1><div class="design-list">'+opts.map(function(o){return '<button class="design-choice '+(state.design===o[0]?'selected':'')+'" type="button" data-design="'+o[0]+'"><strong>'+o[1]+'</strong><small>'+o[2]+'</small></button>';}).join("")+'</div>';
     Array.prototype.forEach.call(screen.querySelectorAll("[data-design]"),function(btn){btn.onclick=function(){state.design=btn.getAttribute("data-design");saveState();renderDesign();};});
