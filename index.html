@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_COMPANY_LOGO -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_IPAD_UPLOAD_MENU -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -56,6 +56,12 @@ button{cursor:pointer}
 
 /* ===== RESPONSIVE ===== */
 /* SmartBrief responsive overrides */
+/* Keep the project menu visible in scrollable grid layouts. */
+.area-tabs{min-width:0;min-height:31px}
+@media (min-width:600px){
+  .area-tabs{min-height:44px;flex-wrap:wrap;gap:6px;overflow:visible}
+  .area-tab{height:44px;padding:0 12px;font-size:12px}
+}
 @media (min-width:600px) and (max-width:1023px){
   body{display:flex;align-items:center;justify-content:center;padding:24px}
   .app-shell{width:min(calc(100vw - 48px),860px);height:min(calc(100dvh - 48px),920px);max-height:min(calc(100dvh - 48px),920px);border:1px solid var(--line)}
@@ -75,7 +81,13 @@ button{cursor:pointer}
   .screen:has(.confirm-list){display:grid;grid-template-columns:minmax(280px,.85fr) minmax(430px,1.15fr);column-gap:52px;align-content:start}.screen:has(.confirm-list)>.eyebrow,.screen:has(.confirm-list)>h1{grid-column:1/-1}.screen:has(.confirm-list) .confirm-list{grid-column:1;margin-top:26px}.screen:has(.confirm-list) .helper{grid-column:1}.screen:has(.confirm-list) .field-grid{grid-column:2;grid-row:3/span 2;margin-top:26px}
   .screen:has(.choice-grid){display:grid;grid-template-columns:minmax(0,1.1fr) minmax(390px,.9fr);grid-template-rows:auto auto auto auto auto;column-gap:48px;align-content:start}.screen:has(.choice-grid) .area-meta,.screen:has(.choice-grid)>.eyebrow,.screen:has(.choice-grid)>h1{grid-column:1/-1}.screen:has(.choice-grid) .choice-grid{grid-column:1;grid-row:4;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:26px}.screen:has(.choice-grid) .field-grid{grid-column:2;grid-row:4;margin-top:26px;gap:15px}.screen:has(.choice-grid) .product-details{grid-column:2;grid-row:4;margin-top:26px}.screen:has(.choice-grid) .helper{grid-column:1/-1;grid-row:5}
   .choice{min-height:54px;font-size:12.5px}input,select{height:45px;font-size:13px}textarea{font-size:13px}.product-detail-row{grid-template-columns:minmax(140px,1fr) 88px minmax(145px,1fr);gap:10px;padding:11px 0}.product-detail-name{font-size:12px}.product-detail-field input{height:40px;font-size:12px}
-  .screen:has(.area-tabs){display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.7fr);column-gap:48px;align-content:start}.screen:has(.area-tabs)>.eyebrow,.screen:has(.area-tabs)>h1{grid-column:1/-1}.screen:has(.area-tabs) .area-tabs,.screen:has(.area-tabs) .helper,.screen:has(.area-tabs) .upload-box{grid-column:1}.screen:has(.area-tabs) .drop-zone{grid-column:2;grid-row:4;min-height:116px;margin-top:25px}
+  .screen:has(.area-tabs){display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.7fr);grid-template-rows:repeat(6,max-content);column-gap:48px;align-content:start}
+  .screen:has(.area-tabs)>.eyebrow,.screen:has(.area-tabs)>h1{grid-column:1/-1}
+  .screen:has(.area-tabs) .area-tabs{grid-column:1/-1;grid-row:3}
+  .screen:has(.area-tabs)>.helper:not(.upload-status){grid-column:1/-1;grid-row:4}
+  .screen:has(.area-tabs) .upload-box{grid-column:1;grid-row:5}
+  .screen:has(.area-tabs) .drop-zone{grid-column:2;grid-row:5;align-self:start;min-height:116px;margin-top:11px}
+  .screen:has(.area-tabs) .upload-status{grid-column:1/-1;grid-row:6}
   .screen:has(#dateField){display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.8fr);column-gap:52px;align-content:start}.screen:has(#dateField)>.eyebrow,.screen:has(#dateField)>h1{grid-column:1/-1}.screen:has(#dateField)>.field-grid:first-of-type{grid-column:1;margin-top:28px}.screen:has(#dateField)>.segment{grid-column:1}.screen:has(#dateField)>.field-grid:last-of-type{grid-column:2;grid-row:3/span 2;margin-top:28px!important}
   .screen:has(.summary){display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.7fr);column-gap:48px;align-content:start}.screen:has(.summary)>.eyebrow,.screen:has(.summary)>h1{grid-column:1/-1}.screen:has(.summary) .summary{grid-column:1;margin-top:26px}.screen:has(.summary) .contact-grid{grid-column:2;grid-row:3;margin-top:26px}
   .nav-grid{grid-template-columns:210px 210px;justify-content:end;gap:10px}.nav-button{height:51px;font-size:14px}
@@ -168,7 +180,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-company-logo";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-ipad-upload-menu";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
