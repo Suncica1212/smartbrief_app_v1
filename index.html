@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-08-30_2030_TESTED -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_INPUT_ZOOM_FIX -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -78,6 +78,14 @@ button{cursor:pointer}
   .nav-grid{grid-template-columns:210px 210px;justify-content:end;gap:10px}.nav-button{height:51px;font-size:14px}
 }
 
+/* iOS zooms into focused form controls with text smaller than 16px.
+   Keep touch inputs readable without disabling manual page zoom. */
+@media (max-width:1023px), (any-pointer:coarse){
+  input,select,textarea,
+  .product-detail-field input,
+  .product-comment textarea{font-size:16px}
+}
+
   </style>
 </head>
 <body>
@@ -144,7 +152,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-08-30-2030-tested";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-input-zoom-fix";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
