@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_INPUT_ZOOM_FIX -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_OTHER_COMMENTS -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -152,7 +152,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-input-zoom-fix";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-other-comments";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -219,7 +219,7 @@ button{cursor:pointer}
     PROJECT_ORDER.forEach(function(key){
       var fields = {};
       PROJECTS[key].fields.forEach(function(field){ fields[field.id] = ""; });
-      areaData[key] = {choices:[],fields:fields,items:{}};
+      areaData[key] = {choices:[],fields:fields,items:{},otherComment:""};
       if(key === "beschilderung"){
         PROJECTS[key].choices.forEach(function(choice){ areaData[key].items[choice] = {count:"",size:"",comment:""}; });
       }
@@ -227,7 +227,7 @@ button{cursor:pointer}
     });
     return {
       selected:[],
-      overview:{projectName:"",location:"",context:""},
+      overview:{projectName:"",location:"",context:"",contextComment:""},
       areaData:areaData,
       design:"",
       uploadArea:"",
@@ -247,6 +247,7 @@ button{cursor:pointer}
       if(!saved || typeof saved !== "object") return base;
       base.selected = Array.isArray(saved.selected) ? saved.selected.filter(function(k){return PROJECT_ORDER.indexOf(k) >= 0;}) : [];
       base.overview = Object.assign(base.overview, saved.overview || {});
+      if(typeof base.overview.contextComment !== "string") base.overview.contextComment = "";
       base.design = typeof saved.design === "string" ? saved.design : "";
       base.uploadArea = typeof saved.uploadArea === "string" ? saved.uploadArea : "";
       base.planning = Object.assign(base.planning, saved.planning || {});
@@ -254,6 +255,7 @@ button{cursor:pointer}
       PROJECT_ORDER.forEach(function(key){
         var incoming = saved.areaData && saved.areaData[key] ? saved.areaData[key] : {};
         if(Array.isArray(incoming.choices)) base.areaData[key].choices = incoming.choices.slice();
+        if(typeof incoming.otherComment === "string") base.areaData[key].otherComment = incoming.otherComment;
         if(incoming.fields && typeof incoming.fields === "object") Object.assign(base.areaData[key].fields, incoming.fields);
         if(incoming.items && typeof incoming.items === "object"){
           Object.keys(incoming.items).forEach(function(choice){
@@ -281,6 +283,18 @@ button{cursor:pointer}
 
   function toggle(arr,value){
     return arr.indexOf(value) >= 0 ? arr.filter(function(x){return x !== value;}) : arr.concat([value]);
+  }
+
+  function isOtherChoice(choice){
+    return choice === "Sonstiges" || choice === "Etwas anderes";
+  }
+
+  function activeOtherComment(data){
+    return data.choices.some(isOtherChoice) ? data.otherComment.trim() : "";
+  }
+
+  function activeContextComment(){
+    return isOtherChoice(state.overview.context) ? state.overview.contextComment.trim() : "";
   }
 
   var state = loadState();
@@ -388,10 +402,12 @@ button{cursor:pointer}
       '<div class="confirm-list">'+rows+'</div><p class="helper">Diese Bereiche fragen wir nun nacheinander ab. Alles gehört zu einer einzigen Anfrage.</p>'+
       '<div class="field-grid"><div class="field"><label>Projektname · optional</label><input id="projectName" value="'+esc(state.overview.projectName)+'"></div>'+
       '<div class="field"><label>Standort</label><input id="projectLocation" value="'+esc(state.overview.location)+'"></div>'+
-      '<div class="field"><label>Projektart / Anlass · optional</label><select id="projectContext"><option value=""></option>'+contexts+'</select></div></div>';
+      '<div class="field"><label>Projektart / Anlass · optional</label><select id="projectContext"><option value=""></option>'+contexts+'</select></div>'+
+      '<div class="field" id="contextCommentField"'+(isOtherChoice(state.overview.context)?'':' hidden')+'><label for="contextComment">Kommentar zu Sonstiges · optional</label><textarea id="contextComment" placeholder="Kurz beschreiben, um welche Projektart oder welchen Anlass es geht.">'+esc(state.overview.contextComment)+'</textarea></div></div>';
     document.getElementById("projectName").oninput=function(e){state.overview.projectName=e.target.value;saveState();};
     document.getElementById("projectLocation").oninput=function(e){state.overview.location=e.target.value;saveState();};
-    document.getElementById("projectContext").onchange=function(e){state.overview.context=e.target.value;saveState();};
+    document.getElementById("projectContext").onchange=function(e){state.overview.context=e.target.value;document.getElementById("contextCommentField").hidden=!isOtherChoice(e.target.value);saveState();};
+    document.getElementById("contextComment").oninput=function(e){state.overview.contextComment=e.target.value;saveState();};
   }
 
   function renderArea(){
@@ -410,9 +426,9 @@ button{cursor:pointer}
         return '<div class="product-detail-row '+(other?'has-comment':'')+'"><div class="product-detail-name">'+esc(choice)+'</div>'+
           '<div class="product-detail-field"><label>Anzahl</label><input type="number" min="1" inputmode="numeric" data-sign-choice="'+esc(choice)+'" data-sign-field="count" value="'+esc(item.count)+'"></div>'+
           '<div class="product-detail-field"><label>Masse B × H (cm)</label><input type="text" placeholder="z. B. 80 × 30" data-sign-choice="'+esc(choice)+'" data-sign-field="size" value="'+esc(item.size)+'"></div>'+
-          (other?'<div class="product-comment"><label>Kommentar</label><textarea data-sign-choice="'+esc(choice)+'" data-sign-field="comment" placeholder="Kurz beschreiben, was benötigt wird.">'+esc(item.comment)+'</textarea></div>':'')+'</div>';
+          (other?'<div class="product-comment"><label for="signOtherComment">Kommentar zu Sonstiges · optional</label><textarea id="signOtherComment" data-sign-choice="'+esc(choice)+'" data-sign-field="comment" placeholder="Kurz beschreiben, was benötigt wird.">'+esc(item.comment)+'</textarea></div>':'')+'</div>';
       }).join("")+'</div>';
-    }else if(cfg.fields.length){
+    }else if(cfg.fields.length || data.choices.some(isOtherChoice)){
       details='<div class="field-grid">'+cfg.fields.map(function(field){
         var value=data.fields[field.id]||"";
         if(field.type==="select"){
@@ -420,7 +436,7 @@ button{cursor:pointer}
           return '<div class="field"><label>'+esc(field.label)+'</label><select data-field="'+field.id+'">'+opts+'</select></div>';
         }
         return '<div class="field"><label>'+esc(field.label)+'</label><input type="'+field.type+'" data-field="'+field.id+'" value="'+esc(value)+'"></div>';
-      }).join("")+'</div>';
+      }).join("")+(data.choices.some(isOtherChoice)?'<div class="field"><label for="areaOtherComment">Kommentar zu '+esc(data.choices.filter(isOtherChoice).join(" / "))+' · optional</label><textarea id="areaOtherComment" placeholder="Kurz beschreiben, was benötigt wird.">'+esc(data.otherComment)+'</textarea></div>':'')+'</div>';
     }
 
     screen.innerHTML='<div class="area-meta"><span>'+esc(cfg.name)+'</span><span>'+(index+1)+' von '+state.selected.length+' Bereichen</span></div>'+
@@ -430,6 +446,8 @@ button{cursor:pointer}
     Array.prototype.forEach.call(screen.querySelectorAll("[data-choice]"),function(btn){btn.onclick=function(){data.choices=toggle(data.choices,btn.getAttribute("data-choice"));saveState();renderArea();};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-field]"),function(inp){var h=function(e){data.fields[e.target.getAttribute("data-field")]=e.target.value;saveState();};inp.oninput=h;inp.onchange=h;});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-sign-field]"),function(inp){var h=function(e){var c=e.target.getAttribute("data-sign-choice"),f=e.target.getAttribute("data-sign-field");if(!data.items[c])data.items[c]={count:"",size:"",comment:""};data.items[c][f]=e.target.value;saveState();};inp.oninput=h;inp.onchange=h;});
+    var otherInput=document.getElementById("areaOtherComment");
+    if(otherInput) otherInput.oninput=function(e){data.otherComment=e.target.value;saveState();};
   }
 
   function renderDesign(){
@@ -482,14 +500,17 @@ button{cursor:pointer}
       if(!data.choices.length)return "—";
       return data.choices.map(function(choice){var item=data.items[choice]||{},parts=[];if(item.count)parts.push(item.count+" Stk.");if(item.size)parts.push(item.size+" cm");if(choice==="Sonstiges"&&item.comment&&item.comment.trim())parts.push(item.comment.trim());return parts.length?choice+": "+parts.join(" · "):choice;}).join(" | ");
     }
-    var choices=data.choices.length?data.choices.join(", "):"—";
+    var comment=activeOtherComment(data);
+    var choices=data.choices.length?data.choices.map(function(choice){return isOtherChoice(choice)&&comment?choice+": "+comment:choice;}).join(", "):"—";
     var fields=PROJECTS[key].fields.map(function(f){return data.fields[f.id]?f.label+": "+data.fields[f.id]:"";}).filter(Boolean).join(" · ");
     return fields?choices+" · "+fields:choices;
   }
 
   function renderSummary(){
     setFooter({back:function(){go("planning");},next:sendTest,nextLabel:"Anfrage senden"});
-    var meta=[state.overview.projectName,state.overview.location,state.overview.context].filter(Boolean).join(" · ")||"—";
+    var contextComment=activeContextComment();
+    var context=state.overview.context+(contextComment?": "+contextComment:"");
+    var meta=[state.overview.projectName,state.overview.location,context].filter(Boolean).join(" · ")||"—";
     var areaRows=state.selected.map(function(key){return '<div class="summary-row"><div class="summary-label">'+esc(PROJECTS[key].name)+'</div><div class="summary-value">'+esc(areaSummary(key))+'</div></div>';}).join("");
     var timing=[state.planning.date,state.planning.timing].filter(Boolean).join(" · ")||"—";
     screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><input id="contactName" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><input id="contactEmail" type="email" placeholder="E-Mail" value="'+esc(state.contact.email)+'"></div><div id="validation" class="validation"></div>';
@@ -502,8 +523,8 @@ button{cursor:pointer}
     val.textContent=""; if(sentDialog && sentDialog.showModal) sentDialog.showModal();
   }
   function exportJson(){
-    var payload={createdAt:new Date().toISOString(),project:Object.assign({},state.overview,{selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:state.planning,contact:state.contact};
-    state.selected.forEach(function(key){payload.areas[PROJECTS[key].name]={choices:state.areaData[key].choices,fields:state.areaData[key].fields,items:state.areaData[key].items,files:state.uploads[key],extraFiles:state.extraUploads[key]||[]};});
+    var payload={createdAt:new Date().toISOString(),project:Object.assign({},state.overview,{contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:state.planning,contact:state.contact};
+    state.selected.forEach(function(key){var data=state.areaData[key],items=Object.assign({},data.items);if(items.Sonstiges && data.choices.indexOf("Sonstiges")<0)items.Sonstiges=Object.assign({},items.Sonstiges,{comment:""});payload.areas[PROJECTS[key].name]={choices:data.choices,fields:data.fields,items:items,otherComment:activeOtherComment(data),files:state.uploads[key],extraFiles:state.extraUploads[key]||[]};});
     var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="projektanfrage-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(function(){URL.revokeObjectURL(url);},500);
   }
   function resetAll(){state=makeState();try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
