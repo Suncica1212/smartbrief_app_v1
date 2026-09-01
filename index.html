@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_CONTACT_VALIDATION -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_COMPACT_FIELD_ERRORS -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -48,7 +48,7 @@ button{cursor:pointer}
 .check-row.check-link{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;text-align:left}.check-link:hover,.check-link:active{background:var(--soft)}.check-link:focus-visible{outline:2px solid var(--slate);outline-offset:-3px}.check-link .check-icon{flex-shrink:0}.check-arrow{margin-left:auto;color:var(--slate);font-size:18px}
 .segment{display:grid;grid-template-columns:repeat(3,1fr);margin-top:8px;border:1px solid var(--line)}.segment button{height:38px;border:0;border-right:1px solid var(--line);background:#fff;font-size:11px}.segment button:last-child{border-right:0}.segment button.selected{background:var(--soft);font-weight:600}
 .summary{margin-top:14px;border:1px solid var(--line)}.summary-row{padding:7px 11px;border-bottom:1px solid var(--line)}.summary-row:last-child{border-bottom:0}.summary-label{color:var(--muted);font-size:7.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}.summary-value{margin-top:3px;font-size:11px;line-height:1.32}.summary-value.muted{color:#9aa1a9}.contact-grid{display:grid;gap:6px;margin-top:9px}.contact-grid input{height:38px}.validation{margin-top:8px;color:var(--danger);font-size:10px;line-height:1.4}
-.contact-grid{align-content:start}.contact-grid .field{scroll-margin-block:16px}.contact-grid input[aria-invalid="true"]{border:2px solid var(--danger)}.field-error{margin:5px 0 0;color:var(--danger);font-size:11px;line-height:1.4}.field-error:empty{display:none}
+.contact-grid{align-content:start}.contact-grid .field{scroll-margin-block:16px}.contact-grid input[aria-invalid="true"]{border:2px solid var(--danger)}.field-error{margin:5px 0 0;color:var(--danger);font-size:9.5px;line-height:1.4}.field-error:empty{display:none}
 .dialog{width:min(calc(100% - 36px),390px);border:1px solid var(--line);padding:0;background:#fff}.dialog::backdrop{background:rgba(17,19,21,.28)}.dialog-inner{padding:20px}.dialog-actions{display:grid;gap:7px;margin-top:18px}.dialog-actions.two{grid-template-columns:1fr 1fr}
 @media(max-height:700px){.app-header{padding-top:14px}.screen{padding-top:20px}.project-tile{height:98px}.project-tile img{width:44px;height:34px}h1{font-size:18px}}
 
@@ -76,7 +76,7 @@ button{cursor:pointer}
   .choice{min-height:54px;font-size:12.5px}input,select{height:45px;font-size:13px}textarea{font-size:13px}.product-detail-row{grid-template-columns:minmax(140px,1fr) 88px minmax(145px,1fr);gap:10px;padding:11px 0}.product-detail-name{font-size:12px}.product-detail-field input{height:40px;font-size:12px}
   .screen:has(.area-tabs){display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.7fr);column-gap:48px;align-content:start}.screen:has(.area-tabs)>.eyebrow,.screen:has(.area-tabs)>h1{grid-column:1/-1}.screen:has(.area-tabs) .area-tabs,.screen:has(.area-tabs) .helper,.screen:has(.area-tabs) .upload-box{grid-column:1}.screen:has(.area-tabs) .drop-zone{grid-column:2;grid-row:4;min-height:116px;margin-top:25px}
   .screen:has(#dateField){display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.8fr);column-gap:52px;align-content:start}.screen:has(#dateField)>.eyebrow,.screen:has(#dateField)>h1{grid-column:1/-1}.screen:has(#dateField)>.field-grid:first-of-type{grid-column:1;margin-top:28px}.screen:has(#dateField)>.segment{grid-column:1}.screen:has(#dateField)>.field-grid:last-of-type{grid-column:2;grid-row:3/span 2;margin-top:28px!important}
-  .screen:has(.summary){display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.7fr);column-gap:48px;align-content:start}.screen:has(.summary)>.eyebrow,.screen:has(.summary)>h1{grid-column:1/-1}.screen:has(.summary) .summary{grid-column:1;margin-top:26px}.screen:has(.summary) .contact-grid{grid-column:2;grid-row:3;margin-top:26px}.screen:has(.summary) .validation{grid-column:2}
+  .screen:has(.summary){display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.7fr);column-gap:48px;align-content:start}.screen:has(.summary)>.eyebrow,.screen:has(.summary)>h1{grid-column:1/-1}.screen:has(.summary) .summary{grid-column:1;margin-top:26px}.screen:has(.summary) .contact-grid{grid-column:2;grid-row:3;margin-top:26px}
   .nav-grid{grid-template-columns:210px 210px;justify-content:end;gap:10px}.nav-button{height:51px;font-size:14px}
 }
 
@@ -154,7 +154,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-contact-validation";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-compact-field-errors";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -545,18 +545,17 @@ button{cursor:pointer}
     var meta=[state.overview.projectName,state.overview.location,context].filter(Boolean).join(" · ")||"—";
     var areaRows=state.selected.map(function(key){return '<div class="summary-row"><div class="summary-label">'+esc(PROJECTS[key].name)+'</div><div class="summary-value">'+esc(areaSummary(key))+'</div></div>';}).join("");
     var timing=[state.planning.date,state.planning.timing].filter(Boolean).join(" · ")||"—";
-    screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><div class="field"><label for="contactName">Vorname und Nachname · Pflichtfeld</label><input id="contactName" autocomplete="name" required aria-describedby="contactNameError" aria-invalid="false" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><p id="contactNameError" class="field-error"></p></div><div class="field"><label for="contactEmail">E-Mail · Pflichtfeld</label><input id="contactEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" required aria-describedby="contactEmailError" aria-invalid="false" placeholder="E-Mail" value="'+esc(state.contact.email)+'"><p id="contactEmailError" class="field-error"></p></div></div><div id="validation" class="validation" role="alert"></div>';
+    screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><div class="field"><label for="contactName">Vorname und Nachname · Pflichtfeld</label><input id="contactName" autocomplete="name" required aria-describedby="contactNameError" aria-invalid="false" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><p id="contactNameError" class="field-error"></p></div><div class="field"><label for="contactEmail">E-Mail · Pflichtfeld</label><input id="contactEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" required aria-describedby="contactEmailError" aria-invalid="false" placeholder="E-Mail" value="'+esc(state.contact.email)+'"><p id="contactEmailError" class="field-error"></p></div></div>';
     document.getElementById("contactName").oninput=function(e){state.contact.name=e.target.value;saveState();if(contactValidationShown)validateContactDetails();};document.getElementById("contactEmail").oninput=function(e){state.contact.email=e.target.value;saveState();if(contactValidationShown)validateContactDetails();};
   }
 
   function validateContactDetails(){
-    var name=document.getElementById("contactName"),email=document.getElementById("contactEmail"),val=document.getElementById("validation");
+    var name=document.getElementById("contactName"),email=document.getElementById("contactEmail");
     var nameOk=state.contact.name.trim().length>=2,emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.contact.email.trim());
     name.setAttribute("aria-invalid",String(!nameOk));
     email.setAttribute("aria-invalid",String(!emailOk));
     document.getElementById("contactNameError").textContent=nameOk?"":"Bitte Vorname und Nachname eingeben.";
     document.getElementById("contactEmailError").textContent=emailOk?"":(state.contact.email.trim()?"Bitte eine gültige E-Mail-Adresse eingeben.":"Bitte E-Mail-Adresse eingeben.");
-    val.textContent=nameOk&&emailOk?"":(!nameOk&&!emailOk?"Bitte Name und gültige E-Mail-Adresse ergänzen.":(!nameOk?"Bitte Vorname und Nachname ergänzen.":"Bitte eine gültige E-Mail-Adresse ergänzen."));
     return !nameOk?name:(!emailOk?email:null);
   }
 
