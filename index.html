@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_CHECK_UPLOAD_LINKS -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_DATE_MINIMUM -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -153,7 +153,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-check-upload-links";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-date-minimum";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -492,13 +492,34 @@ button{cursor:pointer}
     });
   }
 
+  function localToday(){
+    var now=new Date();
+    return now.getFullYear()+"-"+("0"+(now.getMonth()+1)).slice(-2)+"-"+("0"+now.getDate()).slice(-2);
+  }
+
+  function validatePlanningDate(){
+    var input=document.getElementById("dateField"),message=document.getElementById("dateValidation");
+    input.min=localToday();
+    if(input.value && input.value<input.min){
+      input.value="";
+      state.planning.date="";
+      saveState();
+      message.textContent="Bitte wählen Sie heute oder ein zukünftiges Datum.";
+      return false;
+    }
+    message.textContent="";
+    return true;
+  }
+
   function renderPlanning(){
-    setFooter({back:function(){go("check");},next:function(){go("summary");}});
+    setFooter({back:function(){go("check");},next:function(){if(validatePlanningDate())go("summary");}});
     var p=state.planning;
     var budgets=["unter CHF 1\'000","CHF 1\'000–2\'500","CHF 2\'500–5\'000","CHF 5\'000–10\'000","über CHF 10\'000"].map(function(v){return '<option '+(p.budget===v?'selected':'')+'>'+v+'</option>';}).join("");
     var timings=["Fix","Flexibel","Noch offen"].map(function(v){return '<button class="'+(p.timing===v?'selected':'')+'" type="button" data-timing="'+v+'">'+v+'</button>';}).join("");
-    screen.innerHTML='<p class="eyebrow">TERMIN & BUDGET</p><h1>Wann soll das Projekt umgesetzt werden?</h1><div class="field-grid"><div class="field"><label>Wunschdatum</label><input id="dateField" type="date" value="'+esc(p.date)+'"></div></div><div class="segment">'+timings+'</div><div class="field-grid" style="margin-top:14px"><div class="field"><label>Budgetrahmen · optional</label><select id="budgetField"><option value=""></option>'+budgets+'</select></div><div class="field"><label>Bemerkungen · optional</label><textarea id="remarksField">'+esc(p.remarks)+'</textarea></div></div>';
-    document.getElementById("dateField").onchange=function(e){p.date=e.target.value;saveState();};document.getElementById("budgetField").onchange=function(e){p.budget=e.target.value;saveState();};document.getElementById("remarksField").oninput=function(e){p.remarks=e.target.value;saveState();};
+    screen.innerHTML='<p class="eyebrow">TERMIN & BUDGET</p><h1>Wann soll das Projekt umgesetzt werden?</h1><div class="field-grid"><div class="field"><label for="dateField">Wunschdatum</label><input id="dateField" type="date" min="'+localToday()+'" aria-describedby="dateValidation" value="'+esc(p.date)+'"><div id="dateValidation" class="validation" role="status"></div></div></div><div class="segment">'+timings+'</div><div class="field-grid" style="margin-top:14px"><div class="field"><label>Budgetrahmen · optional</label><select id="budgetField"><option value=""></option>'+budgets+'</select></div><div class="field"><label>Bemerkungen · optional</label><textarea id="remarksField">'+esc(p.remarks)+'</textarea></div></div>';
+    document.getElementById("dateField").onfocus=function(e){e.target.min=localToday();};
+    document.getElementById("dateField").onchange=function(e){if(validatePlanningDate()){p.date=e.target.value;saveState();}};document.getElementById("budgetField").onchange=function(e){p.budget=e.target.value;saveState();};document.getElementById("remarksField").oninput=function(e){p.remarks=e.target.value;saveState();};
+    validatePlanningDate();
     Array.prototype.forEach.call(screen.querySelectorAll("[data-timing]"),function(btn){btn.onclick=function(){p.timing=btn.getAttribute("data-timing");saveState();renderPlanning();};});
   }
 
@@ -526,11 +547,13 @@ button{cursor:pointer}
   }
 
   function sendTest(){
+    if(state.planning.date && state.planning.date<localToday()){go("planning");return;}
     var val=document.getElementById("validation"),nameOk=state.contact.name.trim().length>=2,emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.contact.email.trim());
     if(!nameOk||!emailOk){val.textContent=!nameOk&&!emailOk?'Bitte Name und gültige E-Mail-Adresse eingeben.':(!nameOk?'Bitte Vorname und Nachname eingeben.':'Bitte eine gültige E-Mail-Adresse eingeben.');return;}
     val.textContent=""; if(sentDialog && sentDialog.showModal) sentDialog.showModal();
   }
   function exportJson(){
+    if(state.planning.date && state.planning.date<localToday()){go("planning");return;}
     var payload={createdAt:new Date().toISOString(),project:Object.assign({},state.overview,{contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:state.planning,contact:state.contact};
     state.selected.forEach(function(key){var data=state.areaData[key],items=Object.assign({},data.items);if(items.Sonstiges && data.choices.indexOf("Sonstiges")<0)items.Sonstiges=Object.assign({},items.Sonstiges,{comment:""});payload.areas[PROJECTS[key].name]={choices:data.choices,fields:data.fields,items:items,otherComment:activeOtherComment(data),files:state.uploads[key],extraFiles:state.extraUploads[key]||[]};});
     var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="projektanfrage-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(function(){URL.revokeObjectURL(url);},500);
