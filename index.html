@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_PDF_REQUEST -->
+<!-- SMARTBRIEF_BUILD_2026-09-01_COMPANY_LOGO -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -30,6 +30,7 @@ button{cursor:pointer}
 .app-shell{width:min(100%,430px);height:100dvh;max-height:100dvh;margin:0 auto;background:#fff;border-left:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
 .app-header{flex:0 0 auto;padding:20px 22px 0;background:#fff}
 .header-row{height:52px;display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.header-row.has-logo{height:116px;align-items:center}.client-logo img{display:block;width:110px;height:110px;object-fit:contain}
 .client-logo{font-size:17px;line-height:38px;font-weight:400}
 .icon-button{width:40px;height:40px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;font-size:23px;line-height:1}
 .progress-wrap{padding-top:19px}.progress-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase}.progress-track{height:2px;margin-top:9px;background:var(--line-soft)}.progress-bar{height:2px;background:var(--slate);transition:width .18s ease}
@@ -163,10 +164,11 @@ button{cursor:pointer}
     </div>
   </dialog>
 
+  <script src="assets/branding.js"></script>
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-pdf-request";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-01-company-logo";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
@@ -660,7 +662,7 @@ button{cursor:pointer}
   }
 
   function projectPdfRows(payload){
-    var rows=[{text:"SmartBrief Projektanfrage",style:"title"},{text:"Erstellt: "+new Date(payload.createdAt).toLocaleString("de-CH"),style:"muted"},{text:"Projekt",style:"heading"}];
+    var rows=[{text:"Projektanfrage",style:"title"},{text:((window.SMARTBRIEF_BRAND||{}).name||"SmartBrief")+" | Erstellt: "+new Date(payload.createdAt).toLocaleString("de-CH"),style:"muted"},{text:"Projekt",style:"heading"}];
     ["projectName","location","context","contextComment"].forEach(function(key){var value=payload.project[key];if(value)rows.push({text:pdfFieldLabel(key)+": "+value});});
     rows.push({text:"Anfragekennung: "+payload.project.requestId});
     Object.keys(payload.areas).forEach(function(areaName){
@@ -694,19 +696,36 @@ button{cursor:pointer}
   function latinBytes(text){var bytes=new Uint8Array(text.length);for(var i=0;i<text.length;i++)bytes[i]=text.charCodeAt(i)&255;return bytes;}
 
   function buildProjectPdf(payload){
-    var pages=[],current=[],y=792;
-    projectPdfRows(payload).forEach(function(row){
-      var style=row.style||"body",size=style==="title"?20:(style==="heading"?13:10),font=(style==="title"||style==="heading")?"F2":"F1",max=size>=18?42:(size>=13?64:92);
+    var brand=window.SMARTBRIEF_BRAND||{},logo=brand.logo,logoBytes="";
+    if(logo&&logo.mime==="image/jpeg"&&logo.width>0&&logo.height>0&&logo.base64)logoBytes=atob(logo.base64);
+    var logoWidth=logoBytes?Math.min(110,110*logo.width/logo.height):0,logoHeight=logoBytes?logoWidth*logo.height/logo.width:0;
+    function header(continued){
+      var commands=["0.82 G 50 730 m 545 730 l S 0 G"];
+      if(logoBytes)commands.push("q "+logoWidth+" 0 0 "+logoHeight+" "+(545-logoWidth)+" "+(838-logoHeight)+" cm /Logo Do Q");
+      if(continued)commands.push("BT /F2 16 Tf 50 792 Td (Projektanfrage) Tj ET","BT /F1 10 Tf 50 768 Td ("+pdfLiteral(brand.name||"SmartBrief")+" - Fortsetzung) Tj ET");
+      return commands;
+    }
+    var pages=[],current=header(false),y=792;
+    projectPdfRows(payload).forEach(function(row,rowIndex){
+      if(rowIndex===2)y=710;
+      var style=row.style||"body",size=style==="title"?20:(style==="heading"?13:10),font=(style==="title"||style==="heading")?"F2":"F1",max=rowIndex<2?60:(size>=18?42:(size>=13?64:92));
       if(style==="heading")y-=8;
       wrapPdfText(row.text,max).forEach(function(line){
-        if(y<54){pages.push(current);current=[];y=792;}
+        if(y<54){pages.push(current);current=header(true);y=710;}
         current.push("BT /"+font+" "+size+" Tf 50 "+y+" Td ("+pdfLiteral(line)+") Tj ET");y-=size+5;
       });
       if(style==="title")y-=8;
     });
     if(current.length||!pages.length)pages.push(current);
     var objects=[null,"<< /Type /Catalog /Pages 2 0 R >>","", "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>","<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>"],kids=[];
-    pages.forEach(function(commands){var pageNo=objects.length,contentNo=pageNo+1,stream=commands.join("\n");kids.push(pageNo+" 0 R");objects.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents "+contentNo+" 0 R >>");objects.push("<< /Length "+latinBytes(stream).length+" >>\nstream\n"+stream+"\nendstream");});
+    var logoObject=0;
+    if(logoBytes){logoObject=objects.length;objects.push("<< /Type /XObject /Subtype /Image /Width "+logo.width+" /Height "+logo.height+" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length "+logoBytes.length+" >>\nstream\n"+logoBytes+"\nendstream");}
+    pages.forEach(function(commands,index){
+      commands.push("BT /F1 9 Tf 50 28 Td ("+pdfLiteral(brand.name||"SmartBrief")+") Tj ET","BT /F1 9 Tf 490 28 Td (Seite "+(index+1)+" / "+pages.length+") Tj ET");
+      var pageNo=objects.length,contentNo=pageNo+1,stream=commands.join("\n");kids.push(pageNo+" 0 R");
+      objects.push("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>"+(logoObject?" /XObject << /Logo "+logoObject+" 0 R >>":"")+" >> /Contents "+contentNo+" 0 R >>");
+      objects.push("<< /Length "+latinBytes(stream).length+" >>\nstream\n"+stream+"\nendstream");
+    });
     objects[2]="<< /Type /Pages /Kids ["+kids.join(" ")+"] /Count "+pages.length+" >>";
     var parts=[latinBytes("%PDF-1.4\n%âãÏÓ\n")],offsets=[0],length=parts[0].length;
     for(var i=1;i<objects.length;i++){offsets[i]=length;var part=latinBytes(i+" 0 obj\n"+objects[i]+"\nendobj\n");parts.push(part);length+=part.length;}
@@ -904,6 +923,11 @@ button{cursor:pointer}
   function init(){
     screen=document.getElementById("screen");footer=document.getElementById("footer");backBtn=document.getElementById("backBtn");nextBtn=document.getElementById("nextBtn");phaseEl=document.getElementById("progressPhase");countEl=document.getElementById("progressCount");barEl=document.getElementById("progressBar");closeBtn=document.getElementById("closeBtn");resetDialog=document.getElementById("resetDialog");sentDialog=document.getElementById("sentDialog");
     if(!screen||!footer||!backBtn||!nextBtn||!phaseEl||!countEl||!barEl) return;
+    var brand=window.SMARTBRIEF_BRAND||{},logoBox=document.querySelector(".client-logo");
+    if(logoBox&&brand.logo&&brand.logo.base64&&brand.logo.mime==="image/jpeg"){
+      var logoImage=document.createElement("img");logoImage.src="data:"+brand.logo.mime+";base64,"+brand.logo.base64;logoImage.alt=brand.name||"Firmenlogo";
+      logoBox.textContent="";logoBox.appendChild(logoImage);logoBox.setAttribute("aria-label",brand.name||"Firmenlogo");logoBox.closest(".header-row").classList.add("has-logo");
+    }
     var fallback=document.getElementById("fallbackStartBtn");if(fallback)fallback.onclick=function(){go("select");};
     if(closeBtn)closeBtn.onclick=function(){if(resetDialog&&resetDialog.showModal)resetDialog.showModal();else go("start");};
     var continueBtn=document.getElementById("continueBtn"),homeBtn=document.getElementById("homeBtn"),resetBtn=document.getElementById("resetBtn"),exportBtn=document.getElementById("exportBtn"),sentCloseBtn=document.getElementById("sentCloseBtn");
