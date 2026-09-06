@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-06_SWISS_PRIVACY_UPLOADS -->
+<!-- SMARTBRIEF_BUILD_2026-09-06_IOS_PHOTO_UPLOAD_FIX -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -188,7 +188,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-06-swiss-privacy-uploads";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-06-ios-photo-upload-fix";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var DATA_POLICY = Object.assign({
@@ -567,8 +567,8 @@ button{cursor:pointer}
   }
 
   function validateUpload(file){
-    var ext=fileExtension(file).slice(1),images=["jpg","jpeg","png","webp"],documents=["pdf","svg","ai","eps"];
-    if(images.indexOf(ext)<0&&documents.indexOf(ext)<0)throw new Error("\u00ab"+file.name+"\u00bb hat ein ungeeignetes Format. Erlaubt sind JPG, PNG, WEBP, PDF, SVG, AI und EPS.");
+    var ext=fileExtension(file).slice(1),images=["jpg","jpeg","png","webp","heic","heif"],documents=["pdf","svg","ai","eps"];
+    if(images.indexOf(ext)<0&&documents.indexOf(ext)<0)throw new Error("\u00ab"+file.name+"\u00bb hat ein ungeeignetes Format. Erlaubt sind JPG, PNG, WEBP, HEIC, HEIF, PDF, SVG, AI und EPS.");
     var limit=images.indexOf(ext)>=0?DATA_POLICY.maxImageBytes:DATA_POLICY.maxFileBytes;
     if(file.size>limit)throw new Error("\u00ab"+file.name+"\u00bb ist zu gross. Maximal erlaubt sind "+formatBytes(limit)+" pro "+(images.indexOf(ext)>=0?"Bild":"Datei")+".");
     if(!file.size)throw new Error("\u00ab"+file.name+"\u00bb ist leer und kann nicht verwendet werden.");
@@ -577,7 +577,7 @@ button{cursor:pointer}
 
   async function optimiseImage(file){
     var isImage=validateUpload(file),ext=fileExtension(file).slice(1);
-    if(!isImage||ext==="png"||file.size<=4*1024*1024)return {file:file,optimised:false,originalSize:file.size};
+    if(!isImage||ext==="png"||ext==="heic"||ext==="heif"||file.size<=4*1024*1024)return {file:file,optimised:false,originalSize:file.size};
     var bitmap;
     try{bitmap=await createImageBitmap(file,{imageOrientation:"from-image"});}catch(err){throw new Error("\u00ab"+file.name+"\u00bb konnte nicht als Bild gelesen werden. Bitte als JPG, PNG oder WEBP neu speichern.");}
     var scale=Math.min(1,DATA_POLICY.imageMaxEdge/Math.max(bitmap.width,bitmap.height));
@@ -858,13 +858,13 @@ button{cursor:pointer}
     var tabs=state.selected.map(function(k){return '<button class="area-tab '+(k===key?'active':'')+'" type="button" data-upload-area="'+k+'">'+esc(PROJECTS[k].name)+'</button>';}).join("");
     function savedRow(meta,label,attrs){
       var reduction=meta.optimised&&meta.originalSize>meta.size?' · optimiert von '+formatBytes(meta.originalSize):'';
-      return '<div class="upload-row upload-saved"><div class="upload-name"><div class="upload-file-name">'+esc(meta.name)+'</div><span class="file-meta">'+formatBytes(meta.size)+reduction+'</span>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept=".jpg,.jpeg,.png,.webp,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
+      return '<div class="upload-row upload-saved"><div class="upload-name"><div class="upload-file-name">'+esc(meta.name)+'</div><span class="file-meta">'+formatBytes(meta.size)+reduction+'</span>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
     }
     var rows=reqs.map(function(label){
       var files=slotFiles(state,key,label);
-      return '<div class="upload-row"><div class="upload-name">'+esc(label)+(files.length?' · '+files.length+' '+(files.length===1?'Datei':'Dateien'):'')+'</div><label class="upload-action" title="Fotos oder Dateien hinzufügen">+<input type="file" multiple aria-label="'+esc(label)+': Fotos oder Dateien hinzufügen" data-upload-slot="'+esc(label)+'" accept=".jpg,.jpeg,.png,.webp,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>'+files.map(function(meta,index){return savedRow(meta,label+' '+(index+1),'data-upload-slot="'+esc(label)+'" data-slot-index="'+index+'"');}).join("");
+      return '<div class="upload-row"><div class="upload-name">'+esc(label)+(files.length?' · '+files.length+' '+(files.length===1?'Datei':'Dateien'):'')+'</div><label class="upload-action" title="Fotos oder Dateien hinzufügen">+<input type="file" multiple aria-label="'+esc(label)+': Fotos oder Dateien hinzufügen" data-upload-slot="'+esc(label)+'" accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>'+files.map(function(meta,index){return savedRow(meta,label+' '+(index+1),'data-upload-slot="'+esc(label)+'" data-slot-index="'+index+'"');}).join("");
     }).join("")+(state.extraUploads[key]||[]).map(function(meta,index){return savedRow(meta,'Zusatzdatei '+(index+1),'data-upload-extra="'+index+'"');}).join("");
-    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+' Pro Ansicht können Sie mehrere Fotos hinzufügen – auch nacheinander.'+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · WEBP BIS 25 MB · PDF · SVG · AI · EPS BIS 50 MB</small><input id="extraFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.pdf,.svg,.ai,.eps" aria-label="Weitere Fotos oder Dateien hinzufügen"'+(uploadBusy?' disabled':'')+'></label><div class="privacy-note"><strong>Upload-Schutz:</strong> Grosse JPG- und WEBP-Bilder werden qualitätsschonend optimiert (max. 5000 px, hohe Qualität). Produktionsdateien bleiben unverändert. Bitte keine nicht benötigten besonders schützenswerten Personendaten hochladen. <button class="privacy-link" type="button" data-open-privacy>Datenschutzdetails</button></div><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
+    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+' Pro Ansicht können Sie mehrere Fotos hinzufügen – auch nacheinander.'+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · WEBP · HEIC BIS 25 MB · PDF · SVG · AI · EPS BIS 50 MB</small><input id="extraFiles" type="file" multiple accept="image/*,.pdf,.svg,.ai,.eps" aria-label="Weitere Fotos oder Dateien hinzufügen"'+(uploadBusy?' disabled':'')+'></label><div class="privacy-note"><strong>Upload-Schutz:</strong> Grosse JPG- und WEBP-Bilder werden qualitätsschonend optimiert (max. 5000 px, hohe Qualität). Produktionsdateien und iPhone-Fotos im HEIC-Format bleiben unverändert. Bitte keine nicht benötigten besonders schützenswerten Personendaten hochladen. <button class="privacy-link" type="button" data-open-privacy>Datenschutzdetails</button></div><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
     bindPrivacyLinks();
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-area]"),function(btn){btn.disabled=uploadBusy;btn.onclick=function(){uploadNotice="";uploadNoticeError=false;state.uploadArea=btn.getAttribute("data-upload-area");saveState();renderUploads();};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-slot]"),function(inp){inp.onchange=function(e){var index=e.target.getAttribute("data-slot-index");addUploadFiles(key,e.target.getAttribute("data-upload-slot"),Array.prototype.slice.call(e.target.files||[]),null,index==null?null:Number(index));};});
