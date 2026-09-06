@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-06_UNIQUE_UPLOAD_NAMES -->
+<!-- SMARTBRIEF_BUILD_2026-09-06_FILE_NAMES_AND_DELETE -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -52,6 +52,7 @@ button{cursor:pointer}
 .contact-grid{align-content:start}.contact-grid .field{scroll-margin-block:16px}.contact-grid input[aria-invalid="true"]{border:2px solid var(--danger)}.field-error{margin:5px 0 0;color:var(--danger);font-size:9.5px;line-height:1.4}.field-error:empty{display:none}
 .upload-status{grid-column:1/-1}.upload-error{color:var(--danger)}.zip-wide{grid-column:1/-1}.zip-download{display:flex;align-items:center;justify-content:center;text-decoration:none}.zip-download[hidden]{display:none}.dialog{width:min(calc(100% - 36px),390px);border:1px solid var(--line);padding:0;background:#fff}.dialog::backdrop{background:rgba(17,19,21,.28)}.dialog-inner{padding:20px}.dialog-actions{display:grid;gap:7px;margin-top:18px}.dialog-actions.two{grid-template-columns:1fr 1fr}
 .assignment-dialog{width:min(calc(100% - 28px),760px);max-height:min(88vh,760px)}.assignment-dialog .dialog-inner{padding:18px}.assignment-toolbar{margin-top:14px;padding:11px;border:1px solid var(--line);background:var(--soft)}.assignment-toolbar label,.assignment-field label{display:block;margin-bottom:5px;color:var(--muted);font-size:8px;font-weight:500;letter-spacing:.14em;text-transform:uppercase}.assignment-toolbar select,.assignment-field select{width:100%;height:38px;border:1px solid var(--line);border-radius:0;background:#fff;padding:0 30px 0 10px;color:var(--ink);font:inherit;font-size:11px}.assignment-list{display:grid;gap:8px;margin-top:10px;max-height:48vh;overflow:auto}.assignment-item{display:grid;grid-template-columns:64px minmax(0,1fr);gap:11px;padding:10px;border:1px solid var(--line)}.assignment-preview{width:64px;height:64px;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;background:var(--soft);color:var(--muted);font-size:9px;font-weight:600;letter-spacing:.08em}.assignment-preview img{width:100%;height:100%;display:block;object-fit:cover}.assignment-file{min-width:0}.assignment-file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600}.assignment-file-meta{margin-top:2px;color:var(--muted);font-size:8.5px}.assignment-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.assignment-status{min-height:1.4em;margin:10px 0 0;color:var(--muted);font-size:10px}.assignment-status.upload-error{color:var(--danger)}
+.upload-file-label{color:var(--muted);font-size:7px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}.upload-file-name{margin-top:2px;color:var(--ink);font-size:10px;font-weight:600}.upload-actions{display:flex;gap:4px}.upload-delete{width:31px;height:31px;border:1px solid var(--line);background:#fff;color:var(--danger);font-size:17px;line-height:1}.upload-delete:active{background:#f8eeee}
 .privacy-note{margin-top:10px;padding:10px 11px;border-left:2px solid var(--slate);background:var(--soft);color:var(--muted);font-size:9.5px;line-height:1.45}.privacy-note strong{color:var(--ink);font-weight:600}.privacy-consent{display:grid;grid-template-columns:20px 1fr;gap:8px;align-items:start;margin-top:10px;color:var(--muted);font-size:10px;line-height:1.45}.privacy-consent input{width:16px;height:16px;margin:0}.privacy-link{padding:0;border:0;background:none;color:var(--slate);text-decoration:underline;font-size:inherit}.file-meta{display:block;margin-top:2px;color:var(--muted);font-size:8.5px}.policy-list{margin:12px 0 0;padding-left:18px;color:var(--muted);font-size:11px;line-height:1.55}.policy-list li+li{margin-top:5px}
 @supports (-webkit-touch-callout:none){#dateField{-webkit-appearance:none;appearance:none;display:block;inline-size:100%!important;min-inline-size:0!important;max-inline-size:100%!important;line-height:39px}#dateField::-webkit-date-and-time-value{min-width:0;height:39px;line-height:39px;text-align:left}}
 @media(max-width:560px){.assignment-fields{grid-template-columns:1fr}.assignment-list{max-height:46vh}.assignment-dialog .dialog-actions.two{grid-template-columns:1fr}}
@@ -204,12 +205,25 @@ button{cursor:pointer}
     </div>
   </dialog>
 
+  <dialog id="fileDeleteDialog" class="dialog">
+    <div class="dialog-inner">
+      <p class="eyebrow">DATEI LÖSCHEN</p>
+      <h2>Datei wirklich entfernen?</h2>
+      <p id="fileDeleteName" class="body-copy"></p>
+      <p class="body-copy">Die Datei wird aus dieser Anfrage und aus der lokalen Dateiablage entfernt. Falls sie nur falsch zugeordnet war, können Sie sie anschliessend erneut korrekt hochladen.</p>
+      <div class="dialog-actions two">
+        <button id="fileDeleteCancelBtn" class="nav-button secondary" type="button">Abbrechen</button>
+        <button id="fileDeleteConfirmBtn" class="nav-button primary" type="button">Datei löschen</button>
+      </div>
+    </div>
+  </dialog>
+
   <script src="assets/config.js"></script>
   <script src="assets/branding.js"></script>
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-06-unique-upload-names";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-06-file-names-and-delete";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var DATA_POLICY = Object.assign({
@@ -390,7 +404,7 @@ button{cursor:pointer}
   var state = loadState();
   var contactValidationShown = false;
   var route = {name:"start",index:0};
-  var screen,footer,backBtn,nextBtn,phaseEl,countEl,barEl,closeBtn,resetDialog,sentDialog,assignmentDialog;
+  var screen,footer,backBtn,nextBtn,phaseEl,countEl,barEl,closeBtn,resetDialog,sentDialog,assignmentDialog,fileDeleteDialog;
 
   function parseRoute(){
     var hash = (location.hash || "#start").replace(/^#/,"");
@@ -659,7 +673,7 @@ button{cursor:pointer}
   }
 
   var filesDbPromise=null,uploadBusy=false,uploadNotice="",uploadNoticeError=false,archiveRevision=0,zipObjectUrl="",zipLibraryPromise=null;
-  var stagedUploads=[],stagedPreviewUrls=[],savedPreviewUrls=[],previewGeneration=0;
+  var stagedUploads=[],stagedPreviewUrls=[],savedPreviewUrls=[],previewGeneration=0,pendingFileDelete=null;
 
   function openFilesDb(){
     if(filesDbPromise)return filesDbPromise;
@@ -846,6 +860,33 @@ button{cursor:pointer}
     }));
   }
 
+  function requestFileDelete(key,label,index,meta){
+    if(uploadBusy||!meta)return;
+    pendingFileDelete={key:key,label:label,index:index,meta:meta};
+    var name=document.getElementById("fileDeleteName");
+    if(name)name.textContent="Dateiname für die Firma: "+meta.name;
+    if(fileDeleteDialog&&fileDeleteDialog.showModal)fileDeleteDialog.showModal();
+  }
+
+  async function deletePendingFile(){
+    if(uploadBusy||!pendingFileDelete)return;
+    var target=pendingFileDelete,list=target.label?slotFiles(state,target.key,target.label):(state.extraUploads[target.key]||[]);
+    var current=list[target.index];
+    if(!current||current.fileId!==target.meta.fileId){pendingFileDelete=null;if(fileDeleteDialog&&fileDeleteDialog.open)fileDeleteDialog.close();return;}
+    var removed=list.splice(target.index,1)[0];
+    if(target.label)state.uploads[target.key][target.label]=list;else state.extraUploads[target.key]=list;
+    if(!saveState()){
+      list.splice(target.index,0,removed);
+      uploadNoticeError=true;uploadNotice="Die Datei konnte nicht gelöscht werden. Bitte Speicherplatz freigeben und erneut versuchen.";
+    }else{
+      invalidateArchive();uploadNoticeError=false;uploadNotice="Datei gelöscht.";
+      if(removed.fileId)await fileStore("delete",removed.fileId).catch(function(){});
+    }
+    pendingFileDelete=null;
+    if(fileDeleteDialog&&fileDeleteDialog.open)fileDeleteDialog.close();
+    if(route.name==="uploads")renderUploads();
+  }
+
   function attachmentRows(key){
     return uploadRequirements(key).flatMap(function(label){return slotFiles(state,key,label).map(function(meta,index){return {label:label,meta:meta,slotIndex:index};});}).concat((state.extraUploads[key]||[]).map(function(meta,index){return {label:"Zusatzdatei "+String(index+1).padStart(2,"0"),meta:meta,extraIndex:index};}));
   }
@@ -994,20 +1035,22 @@ button{cursor:pointer}
     var key=state.uploadArea,cfg=PROJECTS[key],reqs=uploadRequirements(key);
     setFooter({back:function(){go("design");},next:function(){go("check");}});
     var tabs=state.selected.map(function(k){return '<button class="area-tab '+(k===key?'active':'')+'" type="button" data-upload-area="'+k+'">'+esc(PROJECTS[k].name)+'</button>';}).join("");
-    function savedRow(meta,label,attrs){
+    function savedRow(meta,label,attrs,deleteAttrs){
       var reduction=meta.optimised&&meta.originalSize>meta.size?' · optimiert von '+formatBytes(meta.originalSize):'';
-      var ext=fileBadge(meta),original=meta.originalName&&meta.originalName!==meta.name?'Original: '+meta.originalName+' · ':'';
-      return '<div class="upload-row upload-saved"><div class="file-thumb" data-file-preview="'+esc(meta.fileId||'')+'" data-file-type="'+esc(meta.type||'')+'" data-file-ext="'+esc(ext)+'" aria-hidden="true">'+esc(ext)+'</div><div class="upload-name"><div class="upload-file-name">'+esc(meta.name)+'</div><span class="file-meta">'+esc(original)+formatBytes(meta.size)+reduction+'</span>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
+      var ext=fileBadge(meta),original=meta.originalName||meta.name;
+      return '<div class="upload-row upload-saved"><div class="file-thumb" data-file-preview="'+esc(meta.fileId||'')+'" data-file-type="'+esc(meta.type||'')+'" data-file-ext="'+esc(ext)+'" aria-hidden="true">'+esc(ext)+'</div><div class="upload-name"><div class="upload-file-label">Dateiname für die Firma</div><div class="upload-file-name">'+esc(meta.name)+'</div><span class="file-meta">Originaldatei: '+esc(original)+' · '+formatBytes(meta.size)+reduction+'</span>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><div class="upload-actions"><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label><button class="upload-delete" type="button" title="Datei löschen" aria-label="'+esc(label)+': Datei löschen" '+deleteAttrs+(uploadBusy?' disabled':'')+'>×</button></div></div>';
     }
     var rows=reqs.map(function(label){
       var files=slotFiles(state,key,label);
-      return '<div class="upload-row"><div class="upload-name">'+esc(label)+(files.length?' · '+files.length+' '+(files.length===1?'Datei':'Dateien'):'')+'</div><label class="upload-action" title="Fotos oder Dateien hinzufügen">+<input type="file" multiple aria-label="'+esc(label)+': Fotos oder Dateien hinzufügen" data-upload-slot="'+esc(label)+'" accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>'+files.map(function(meta,index){return savedRow(meta,label+' '+(index+1),'data-upload-slot="'+esc(label)+'" data-slot-index="'+index+'"');}).join("");
-    }).join("")+(state.extraUploads[key]||[]).map(function(meta,index){return savedRow(meta,'Zusatzdatei '+(index+1),'data-upload-extra="'+index+'"');}).join("");
+      return '<div class="upload-row"><div class="upload-name">'+esc(label)+(files.length?' · '+files.length+' '+(files.length===1?'Datei':'Dateien'):'')+'</div><label class="upload-action" title="Fotos oder Dateien hinzufügen">+<input type="file" multiple aria-label="'+esc(label)+': Fotos oder Dateien hinzufügen" data-upload-slot="'+esc(label)+'" accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>'+files.map(function(meta,index){return savedRow(meta,label+' '+(index+1),'data-upload-slot="'+esc(label)+'" data-slot-index="'+index+'"','data-delete-slot="'+esc(label)+'" data-delete-index="'+index+'"');}).join("");
+    }).join("")+(state.extraUploads[key]||[]).map(function(meta,index){return savedRow(meta,'Zusatzdatei '+(index+1),'data-upload-extra="'+index+'"','data-delete-extra="'+index+'"');}).join("");
     screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+' Pro Ansicht können Sie mehrere Fotos hinzufügen – auch nacheinander.'+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Dateien gesammelt hochladen und zuordnen</strong><small>Danach Teilprojekt und Bereich wählen · JPG · PNG · WEBP · HEIC BIS 25 MB · PDF · SVG · AI · EPS BIS 50 MB</small><input id="extraFiles" type="file" multiple accept="image/*,.pdf,.svg,.ai,.eps" aria-label="Dateien gesammelt hochladen und anschliessend zuordnen"'+(uploadBusy?' disabled':'')+'></label><div class="privacy-note"><strong>Upload-Schutz:</strong> Grosse JPG- und WEBP-Bilder werden qualitätsschonend optimiert (max. 5000 px, hohe Qualität). Produktionsdateien und iPhone-Fotos im HEIC-Format bleiben unverändert. <strong>Aufbewahrungsfrist: '+DATA_POLICY.retentionDays+' Tage.</strong> Bitte keine nicht benötigten besonders schützenswerten Personendaten hochladen. <button class="privacy-link" type="button" data-open-privacy>Datenschutzdetails</button></div><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
     bindPrivacyLinks();
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-area]"),function(btn){btn.disabled=uploadBusy;btn.onclick=function(){uploadNotice="";uploadNoticeError=false;state.uploadArea=btn.getAttribute("data-upload-area");saveState();renderUploads();};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-slot]"),function(inp){inp.onchange=function(e){var index=e.target.getAttribute("data-slot-index");addUploadFiles(key,e.target.getAttribute("data-upload-slot"),Array.prototype.slice.call(e.target.files||[]),null,index==null?null:Number(index));};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-extra]"),function(inp){inp.onchange=function(e){var file=e.target.files&&e.target.files[0];if(file)addUploadFiles(key,null,[file],Number(e.target.getAttribute("data-upload-extra")));};});
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-delete-slot]"),function(btn){btn.onclick=function(){var label=btn.getAttribute("data-delete-slot"),index=Number(btn.getAttribute("data-delete-index"));requestFileDelete(key,label,index,slotFiles(state,key,label)[index]);};});
+    Array.prototype.forEach.call(screen.querySelectorAll("[data-delete-extra]"),function(btn){btn.onclick=function(){var index=Number(btn.getAttribute("data-delete-extra"));requestFileDelete(key,null,index,(state.extraUploads[key]||[])[index]);};});
     document.getElementById("extraFiles").onchange=function(e){var files=Array.prototype.slice.call(e.target.files||[]);e.target.value="";openUploadAssignment(files);};
     loadSavedPreviews();
   }
@@ -1127,10 +1170,10 @@ button{cursor:pointer}
     var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=projectFolder()+".json";a.click();setTimeout(function(){URL.revokeObjectURL(url);},10000);
   }
 
-  function resetAll(){if(uploadBusy)return;var previousId=state.requestId;invalidateArchive();clearStagedUploads();clearSavedPreviewUrls();state=makeState();uploadNotice="";deleteRequestFiles(previousId).catch(function(){});try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
+  function resetAll(){if(uploadBusy)return;var previousId=state.requestId;invalidateArchive();clearStagedUploads();clearSavedPreviewUrls();pendingFileDelete=null;state=makeState();uploadNotice="";deleteRequestFiles(previousId).catch(function(){});try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
 
   function init(){
-    screen=document.getElementById("screen");footer=document.getElementById("footer");backBtn=document.getElementById("backBtn");nextBtn=document.getElementById("nextBtn");phaseEl=document.getElementById("progressPhase");countEl=document.getElementById("progressCount");barEl=document.getElementById("progressBar");closeBtn=document.getElementById("closeBtn");resetDialog=document.getElementById("resetDialog");sentDialog=document.getElementById("sentDialog");assignmentDialog=document.getElementById("assignmentDialog");
+    screen=document.getElementById("screen");footer=document.getElementById("footer");backBtn=document.getElementById("backBtn");nextBtn=document.getElementById("nextBtn");phaseEl=document.getElementById("progressPhase");countEl=document.getElementById("progressCount");barEl=document.getElementById("progressBar");closeBtn=document.getElementById("closeBtn");resetDialog=document.getElementById("resetDialog");sentDialog=document.getElementById("sentDialog");assignmentDialog=document.getElementById("assignmentDialog");fileDeleteDialog=document.getElementById("fileDeleteDialog");
     if(!screen||!footer||!backBtn||!nextBtn||!phaseEl||!countEl||!barEl) return;
     var brand=window.SMARTBRIEF_BRAND||{},logoBox=document.querySelector(".client-logo");
     if(logoBox&&brand.logo&&brand.logo.base64&&brand.logo.mime==="image/jpeg"){
@@ -1144,6 +1187,10 @@ button{cursor:pointer}
     if(assignmentCancelBtn)assignmentCancelBtn.onclick=function(){if(uploadBusy)return;clearStagedUploads();assignmentDialog.close();};
     if(assignmentSaveBtn)assignmentSaveBtn.onclick=saveAssignedUploads;
     if(assignmentDialog)assignmentDialog.addEventListener("cancel",function(event){if(uploadBusy){event.preventDefault();return;}clearStagedUploads();});
+    var fileDeleteCancelBtn=document.getElementById("fileDeleteCancelBtn"),fileDeleteConfirmBtn=document.getElementById("fileDeleteConfirmBtn");
+    if(fileDeleteCancelBtn)fileDeleteCancelBtn.onclick=function(){pendingFileDelete=null;fileDeleteDialog.close();};
+    if(fileDeleteConfirmBtn)fileDeleteConfirmBtn.onclick=deletePendingFile;
+    if(fileDeleteDialog)fileDeleteDialog.addEventListener("cancel",function(){pendingFileDelete=null;});
     if(closeBtn)closeBtn.onclick=function(){if(resetDialog&&resetDialog.showModal)resetDialog.showModal();else go("start");};
     var continueBtn=document.getElementById("continueBtn"),homeBtn=document.getElementById("homeBtn"),resetBtn=document.getElementById("resetBtn"),exportBtn=document.getElementById("exportBtn"),sentCloseBtn=document.getElementById("sentCloseBtn");
     document.getElementById("zipExportBtn").onclick=prepareProjectZip;
