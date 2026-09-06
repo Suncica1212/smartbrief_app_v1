@@ -40,4 +40,4 @@ button{cursor:pointer}
 @supports (-webkit-touch-callout:none){#dateField{-webkit-appearance:none;appearance:none;display:block;inline-size:100%!important;min-inline-size:0!important;max-inline-size:100%!important;line-height:39px}#dateField::-webkit-date-and-time-value{min-width:0;height:39px;line-height:39px;text-align:left}}
 @media(max-width:560px){.assignment-fields{grid-template-columns:1fr}.assignment-list{max-height:46vh}.assignment-dialog .dialog-actions.two{grid-template-columns:1fr}}
 @media(max-height:700px){.app-header{padding-top:14px}.screen{padding-top:20px}.project-tile{height:98px}.project-tile img{width:44px;height:34px}h1{font-size:18px}}
-@media (min-width:1024px){.screen:has(#dateField)>.segment{width:min(100%,480px)}}
+@media (min-width:1024px){.screen:has(#dateField)>.segment{align-self:start}}
