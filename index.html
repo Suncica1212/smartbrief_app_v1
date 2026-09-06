@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-06_IOS_DATE_ALIGNMENT_FIX -->
+<!-- SMARTBRIEF_BUILD_2026-09-06_BATCH_ASSIGNMENT_PREVIEWS -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -44,15 +44,17 @@ button{cursor:pointer}
 .area-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;color:var(--muted);font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase}.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:14px}.choice{position:relative;min-height:43px;border:1px solid var(--line);background:#fff;padding:8px 25px 8px 10px;text-align:left;font-size:11px;line-height:1.25}.choice.selected{border-color:var(--slate);background:var(--soft)}.choice-mark{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:14px;height:14px;border:1px solid #adb4bc;display:grid;place-items:center;color:transparent;font-size:10px;font-weight:600}.choice.selected .choice-mark{border-color:var(--slate);color:var(--slate)}
 .product-details{margin-top:13px;border-top:1px solid var(--line)}.product-detail-row{display:grid;grid-template-columns:minmax(0,1fr) 68px minmax(105px,1fr);gap:7px;align-items:end;padding:9px 0;border-bottom:1px solid var(--line)}.product-detail-name{align-self:center;min-width:0;font-size:11px;font-weight:500;line-height:1.25}.product-detail-field,.product-comment{min-width:0}.product-detail-field input{height:35px;padding:0 7px;font-size:11.5px}.product-detail-row.has-comment .product-comment{grid-column:1/-1}.product-comment textarea{min-height:54px;font-size:11.5px}
 .design-list{margin-top:17px;border:1px solid var(--line)}.design-choice{width:100%;min-height:63px;border:0;border-bottom:1px solid var(--line);background:#fff;padding:10px 14px;text-align:left}.design-choice:last-child{border-bottom:0}.design-choice.selected{background:var(--soft)}.design-choice strong{display:block;font-size:12px}.design-choice small{display:block;margin-top:4px;color:var(--muted);font-size:10.5px;line-height:1.35}
-.area-tabs{display:flex;gap:4px;margin-top:13px;overflow-x:auto;scrollbar-width:none}.area-tab{flex:0 0 auto;height:31px;border:1px solid var(--line);background:#fff;padding:0 8px;font-size:9.5px;white-space:nowrap}.area-tab.active{border-color:var(--slate);background:var(--slate);color:#fff}.upload-box{margin-top:11px;border:1px solid var(--line)}.upload-title{height:31px;padding:0 11px;border-bottom:1px solid var(--line);display:flex;align-items:center;color:var(--muted);font-size:8.5px;font-weight:500;letter-spacing:.17em;text-transform:uppercase}.upload-row{min-height:43px;padding:6px 11px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}.upload-saved{padding-left:22px;background:var(--soft,#f7f8f9)}.upload-row:last-child{border-bottom:0}.upload-name{min-width:0;font-size:11px}.upload-file-name{margin-top:2px;color:var(--muted);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.upload-action{position:relative;width:31px;height:31px;border:1px solid var(--line);display:grid;place-items:center;font-size:16px;overflow:hidden}.upload-action input{position:absolute;inset:0;opacity:0;cursor:pointer}.drop-zone{position:relative;min-height:66px;margin-top:9px;border:1px dashed var(--slate);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer}.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}.drop-zone strong{font-size:10.5px}.drop-zone small{margin-top:4px;color:var(--muted);font-size:7.5px;letter-spacing:.09em;text-transform:uppercase}
+.area-tabs{display:flex;gap:4px;margin-top:13px;overflow-x:auto;scrollbar-width:none}.area-tab{flex:0 0 auto;height:31px;border:1px solid var(--line);background:#fff;padding:0 8px;font-size:9.5px;white-space:nowrap}.area-tab.active{border-color:var(--slate);background:var(--slate);color:#fff}.upload-box{margin-top:11px;border:1px solid var(--line)}.upload-title{height:31px;padding:0 11px;border-bottom:1px solid var(--line);display:flex;align-items:center;color:var(--muted);font-size:8.5px;font-weight:500;letter-spacing:.17em;text-transform:uppercase}.upload-row{min-height:43px;padding:6px 11px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}.upload-saved{grid-template-columns:48px minmax(0,1fr) auto;padding-left:11px;background:var(--soft,#f7f8f9)}.upload-row:last-child{border-bottom:0}.upload-name{min-width:0;font-size:11px}.upload-file-name{margin-top:2px;color:var(--muted);font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.upload-action{position:relative;width:31px;height:31px;border:1px solid var(--line);display:grid;place-items:center;font-size:16px;overflow:hidden}.upload-action input{position:absolute;inset:0;opacity:0;cursor:pointer}.file-thumb{width:48px;height:48px;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;background:#fff;color:var(--muted);font-size:8px;font-weight:600;letter-spacing:.08em}.file-thumb img{width:100%;height:100%;display:block;object-fit:cover}.drop-zone{position:relative;min-height:66px;margin-top:9px;border:1px dashed var(--slate);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer}.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer}.drop-zone strong{font-size:10.5px}.drop-zone small{margin-top:4px;color:var(--muted);font-size:7.5px;letter-spacing:.09em;text-transform:uppercase}
 .check-list{margin-top:15px;border:1px solid var(--line)}.check-row{min-height:43px;padding:7px 12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:11px}.check-row:last-child{border-bottom:0}.check-icon{width:18px;color:var(--slate);font-size:16px}.alert,.ready{margin-top:10px;padding:11px;border-left:2px solid var(--slate);background:var(--soft)}.alert strong,.ready strong{font-size:11.5px}.alert p,.ready p{margin:4px 0 0;color:var(--muted);font-size:9.5px;line-height:1.4}
 .check-row.check-link{width:100%;border:0;border-bottom:1px solid var(--line);background:#fff;text-align:left}.check-link:hover,.check-link:active{background:var(--soft)}.check-link:focus-visible{outline:2px solid var(--slate);outline-offset:-3px}.check-link .check-icon{flex-shrink:0}.check-arrow{margin-left:auto;color:var(--slate);font-size:18px}
 .segment{display:grid;grid-template-columns:repeat(3,1fr);margin-top:8px;border:1px solid var(--line)}.segment button{height:38px;border:0;border-right:1px solid var(--line);background:#fff;font-size:11px}.segment button:last-child{border-right:0}.segment button.selected{background:var(--soft);font-weight:600}
 .summary{margin-top:14px;border:1px solid var(--line)}.summary-row{padding:7px 11px;border-bottom:1px solid var(--line)}.summary-row:last-child{border-bottom:0}.summary-label{color:var(--muted);font-size:7.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}.summary-value{margin-top:3px;font-size:11px;line-height:1.32}.summary-value.muted{color:#9aa1a9}.contact-grid{display:grid;gap:6px;margin-top:9px}.contact-grid input{height:38px}.validation{margin-top:8px;color:var(--danger);font-size:10px;line-height:1.4}
 .contact-grid{align-content:start}.contact-grid .field{scroll-margin-block:16px}.contact-grid input[aria-invalid="true"]{border:2px solid var(--danger)}.field-error{margin:5px 0 0;color:var(--danger);font-size:9.5px;line-height:1.4}.field-error:empty{display:none}
 .upload-status{grid-column:1/-1}.upload-error{color:var(--danger)}.zip-wide{grid-column:1/-1}.zip-download{display:flex;align-items:center;justify-content:center;text-decoration:none}.zip-download[hidden]{display:none}.dialog{width:min(calc(100% - 36px),390px);border:1px solid var(--line);padding:0;background:#fff}.dialog::backdrop{background:rgba(17,19,21,.28)}.dialog-inner{padding:20px}.dialog-actions{display:grid;gap:7px;margin-top:18px}.dialog-actions.two{grid-template-columns:1fr 1fr}
+.assignment-dialog{width:min(calc(100% - 28px),760px);max-height:min(88vh,760px)}.assignment-dialog .dialog-inner{padding:18px}.assignment-toolbar{margin-top:14px;padding:11px;border:1px solid var(--line);background:var(--soft)}.assignment-toolbar label,.assignment-field label{display:block;margin-bottom:5px;color:var(--muted);font-size:8px;font-weight:500;letter-spacing:.14em;text-transform:uppercase}.assignment-toolbar select,.assignment-field select{width:100%;height:38px;border:1px solid var(--line);border-radius:0;background:#fff;padding:0 30px 0 10px;color:var(--ink);font:inherit;font-size:11px}.assignment-list{display:grid;gap:8px;margin-top:10px;max-height:48vh;overflow:auto}.assignment-item{display:grid;grid-template-columns:64px minmax(0,1fr);gap:11px;padding:10px;border:1px solid var(--line)}.assignment-preview{width:64px;height:64px;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;background:var(--soft);color:var(--muted);font-size:9px;font-weight:600;letter-spacing:.08em}.assignment-preview img{width:100%;height:100%;display:block;object-fit:cover}.assignment-file{min-width:0}.assignment-file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600}.assignment-file-meta{margin-top:2px;color:var(--muted);font-size:8.5px}.assignment-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.assignment-status{min-height:1.4em;margin:10px 0 0;color:var(--muted);font-size:10px}.assignment-status.upload-error{color:var(--danger)}
 .privacy-note{margin-top:10px;padding:10px 11px;border-left:2px solid var(--slate);background:var(--soft);color:var(--muted);font-size:9.5px;line-height:1.45}.privacy-note strong{color:var(--ink);font-weight:600}.privacy-consent{display:grid;grid-template-columns:20px 1fr;gap:8px;align-items:start;margin-top:10px;color:var(--muted);font-size:10px;line-height:1.45}.privacy-consent input{width:16px;height:16px;margin:0}.privacy-link{padding:0;border:0;background:none;color:var(--slate);text-decoration:underline;font-size:inherit}.file-meta{display:block;margin-top:2px;color:var(--muted);font-size:8.5px}.policy-list{margin:12px 0 0;padding-left:18px;color:var(--muted);font-size:11px;line-height:1.55}.policy-list li+li{margin-top:5px}
 @supports (-webkit-touch-callout:none){#dateField{-webkit-appearance:none;appearance:none;display:block;inline-size:100%!important;min-inline-size:0!important;max-inline-size:100%!important;line-height:39px}#dateField::-webkit-date-and-time-value{min-width:0;height:39px;line-height:39px;text-align:left}}
+@media(max-width:560px){.assignment-fields{grid-template-columns:1fr}.assignment-list{max-height:46vh}.assignment-dialog .dialog-actions.two{grid-template-columns:1fr}}
 @media(max-height:700px){.app-header{padding-top:14px}.screen{padding-top:20px}.project-tile{height:98px}.project-tile img{width:44px;height:34px}h1{font-size:18px}}
 
 
@@ -184,12 +186,30 @@ button{cursor:pointer}
     </div>
   </dialog>
 
+  <dialog id="assignmentDialog" class="dialog assignment-dialog">
+    <div class="dialog-inner">
+      <p class="eyebrow">DATEIEN ZUORDNEN</p>
+      <h2>Wohin gehören die Dateien?</h2>
+      <p class="body-copy">Ordnen Sie jedes Bild oder Dokument dem passenden Teilprojekt und Bereich zu. Die Vorschau hilft bei Fotos mit wenig aussagekräftigen Dateinamen.</p>
+      <div class="assignment-toolbar">
+        <label for="assignmentBatchProject">Alle Dateien demselben Teilprojekt zuweisen · optional</label>
+        <select id="assignmentBatchProject"></select>
+      </div>
+      <div id="assignmentList" class="assignment-list"></div>
+      <p id="assignmentStatus" class="assignment-status" role="status"></p>
+      <div class="dialog-actions two">
+        <button id="assignmentCancelBtn" class="nav-button secondary" type="button">Abbrechen</button>
+        <button id="assignmentSaveBtn" class="nav-button primary" type="button">Zuordnung übernehmen</button>
+      </div>
+    </div>
+  </dialog>
+
   <script src="assets/config.js"></script>
   <script src="assets/branding.js"></script>
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-06-ios-date-alignment-fix";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-06-batch-assignment-previews";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var DATA_POLICY = Object.assign({
@@ -370,7 +390,7 @@ button{cursor:pointer}
   var state = loadState();
   var contactValidationShown = false;
   var route = {name:"start",index:0};
-  var screen,footer,backBtn,nextBtn,phaseEl,countEl,barEl,closeBtn,resetDialog,sentDialog;
+  var screen,footer,backBtn,nextBtn,phaseEl,countEl,barEl,closeBtn,resetDialog,sentDialog,assignmentDialog;
 
   function parseRoute(){
     var hash = (location.hash || "#start").replace(/^#/,"");
@@ -426,6 +446,7 @@ button{cursor:pointer}
       if(route.index < 0 || route.index >= state.selected.length){ go("area",0); return; }
     }
     updateProgress();
+    if(route.name!=="uploads")clearSavedPreviewUrls();
     screen.scrollTop = 0;
     var fn = {
       start:renderStart,select:renderSelect,overview:renderOverview,area:renderArea,
@@ -638,6 +659,7 @@ button{cursor:pointer}
   }
 
   var filesDbPromise=null,uploadBusy=false,uploadNotice="",uploadNoticeError=false,archiveRevision=0,zipObjectUrl="",zipLibraryPromise=null;
+  var stagedUploads=[],stagedPreviewUrls=[],savedPreviewUrls=[],previewGeneration=0;
 
   function openFilesDb(){
     if(filesDbPromise)return filesDbPromise;
@@ -718,6 +740,110 @@ button{cursor:pointer}
       uploadBusy=false;
       if(route.name==="uploads")renderUploads();else render();
     }
+  }
+
+  function fileBadge(file){
+    return (fileExtension(file).slice(1)||"DATEI").toUpperCase().slice(0,5);
+  }
+
+  function isPreviewableImage(file){
+    var ext=fileExtension(file).slice(1);
+    return String(file.type||"").indexOf("image/")===0||["jpg","jpeg","png","webp","heic","heif"].indexOf(ext)>=0;
+  }
+
+  function clearStagedUploads(){
+    stagedPreviewUrls.forEach(function(url){URL.revokeObjectURL(url);});
+    stagedPreviewUrls=[];stagedUploads=[];
+  }
+
+  function clearSavedPreviewUrls(){
+    previewGeneration++;
+    savedPreviewUrls.forEach(function(url){URL.revokeObjectURL(url);});
+    savedPreviewUrls=[];
+  }
+
+  function assignmentProjectOptions(selected){
+    return '<option value="">Teilprojekt wählen</option>'+state.selected.map(function(key){return '<option value="'+esc(key)+'"'+(key===selected?' selected':'')+'>'+esc(PROJECTS[key].name)+'</option>';}).join("");
+  }
+
+  function assignmentSlotOptions(project,selected){
+    if(!project)return '<option value="">Zuerst Teilprojekt wählen</option>';
+    return '<option value="">Bereich wählen</option>'+uploadRequirements(project).map(function(label){return '<option value="'+esc(label)+'"'+(label===selected?' selected':'')+'>'+esc(label)+'</option>';}).join("")+'<option value="__extra__"'+(selected==="__extra__"?' selected':'')+'>Zusatzdatei / allgemeine Ansicht</option>';
+  }
+
+  function renderUploadAssignment(message,isError){
+    var list=document.getElementById("assignmentList"),batch=document.getElementById("assignmentBatchProject"),status=document.getElementById("assignmentStatus");
+    if(!list||!batch||!status)return;
+    var common=stagedUploads.length&&stagedUploads.every(function(item){return item.project===stagedUploads[0].project;})?stagedUploads[0].project:"";
+    batch.innerHTML='<option value="">Einzeln zuordnen</option>'+state.selected.map(function(key){return '<option value="'+esc(key)+'"'+(key===common?' selected':'')+'>'+esc(PROJECTS[key].name)+'</option>';}).join("");
+    list.innerHTML=stagedUploads.map(function(item,index){
+      var preview=item.previewUrl?'<img src="'+esc(item.previewUrl)+'" alt="Vorschau von '+esc(item.file.name)+'">':esc(fileBadge(item.file));
+      return '<article class="assignment-item"><div class="assignment-preview">'+preview+'</div><div class="assignment-file"><div class="assignment-file-name">'+esc(item.file.name)+'</div><div class="assignment-file-meta">'+formatBytes(item.file.size)+' · '+esc(fileBadge(item.file))+'</div><div class="assignment-fields"><div class="assignment-field"><label for="assignProject'+index+'">Teilprojekt</label><select id="assignProject'+index+'" data-assign-project="'+index+'">'+assignmentProjectOptions(item.project)+'</select></div><div class="assignment-field"><label for="assignSlot'+index+'">Bereich</label><select id="assignSlot'+index+'" data-assign-slot="'+index+'"'+(item.project?'':' disabled')+'>'+assignmentSlotOptions(item.project,item.slot)+'</select></div></div></div></article>';
+    }).join("");
+    status.textContent=message||"";status.classList.toggle("upload-error",!!isError);
+    batch.disabled=uploadBusy;
+    Array.prototype.forEach.call(list.querySelectorAll("select"),function(select){select.disabled=uploadBusy||select.disabled;});
+    document.getElementById("assignmentSaveBtn").disabled=uploadBusy;
+    document.getElementById("assignmentCancelBtn").disabled=uploadBusy;
+    batch.onchange=function(){var project=batch.value;stagedUploads.forEach(function(item){item.project=project;item.slot="";});renderUploadAssignment();};
+    Array.prototype.forEach.call(list.querySelectorAll("[data-assign-project]"),function(select){select.onchange=function(){var item=stagedUploads[Number(select.getAttribute("data-assign-project"))];item.project=select.value;item.slot="";renderUploadAssignment();};});
+    Array.prototype.forEach.call(list.querySelectorAll("[data-assign-slot]"),function(select){select.onchange=function(){stagedUploads[Number(select.getAttribute("data-assign-slot"))].slot=select.value;};});
+  }
+
+  function openUploadAssignment(files){
+    if(uploadBusy||!files.length)return;
+    try{files.forEach(validateUpload);}catch(error){uploadNoticeError=true;uploadNotice=error.message||"Mindestens eine Datei kann nicht verwendet werden.";renderUploads();return;}
+    clearStagedUploads();
+    stagedUploads=files.map(function(file){
+      var previewUrl="";
+      if(isPreviewableImage(file)){previewUrl=URL.createObjectURL(file);stagedPreviewUrls.push(previewUrl);}
+      return {file:file,project:"",slot:"",previewUrl:previewUrl};
+    });
+    renderUploadAssignment();
+    if(assignmentDialog&&assignmentDialog.showModal)assignmentDialog.showModal();
+  }
+
+  async function saveAssignedUploads(){
+    if(uploadBusy||!stagedUploads.length)return;
+    var incomplete=stagedUploads.findIndex(function(item){return !item.project||!item.slot;});
+    if(incomplete>=0){renderUploadAssignment("Bitte für jede Datei Teilprojekt und Bereich auswählen.",true);var target=document.getElementById("assignProject"+incomplete);if(stagedUploads[incomplete].project)target=document.getElementById("assignSlot"+incomplete);if(target)target.focus();return;}
+    uploadBusy=true;renderUploadAssignment("Dateien werden geprüft und Bilder bei Bedarf optimiert …",false);
+    var done=0;
+    try{
+      while(stagedUploads.length){
+        var item=stagedUploads[0];
+        await saveUploadFile(item.project,item.slot==="__extra__"?null:item.slot,item.file);
+        if(item.previewUrl){URL.revokeObjectURL(item.previewUrl);stagedPreviewUrls=stagedPreviewUrls.filter(function(url){return url!==item.previewUrl;});}
+        stagedUploads.shift();done++;
+      }
+      uploadNoticeError=false;uploadNotice=done===1?"Datei zugeordnet und sicher lokal vorbereitet.":done+" Dateien zugeordnet und sicher lokal vorbereitet.";
+      if(assignmentDialog&&assignmentDialog.open)assignmentDialog.close();
+    }catch(error){
+      uploadNoticeError=true;uploadNotice=(done?done+" Dateien gespeichert. ":"")+"Weitere Speicherung nicht möglich. "+(error.message||"Bitte erneut versuchen.");
+      renderUploadAssignment(uploadNotice,true);
+    }finally{
+      uploadBusy=false;
+      if(stagedUploads.length)renderUploadAssignment(uploadNotice,uploadNoticeError);else clearStagedUploads();
+      if(route.name==="uploads")renderUploads();else render();
+    }
+  }
+
+  async function loadSavedPreviews(){
+    clearSavedPreviewUrls();
+    var generation=previewGeneration,nodes=Array.prototype.slice.call(screen.querySelectorAll("[data-file-preview]"));
+    await Promise.all(nodes.map(async function(node){
+      var id=node.getAttribute("data-file-preview"),type=node.getAttribute("data-file-type")||"",ext=node.getAttribute("data-file-ext")||"DATEI";
+      if(!id||(!type.startsWith("image/")&&["JPG","JPEG","PNG","WEBP","HEIC","HEIF"].indexOf(ext)<0))return;
+      try{
+        var record=await fileStore("get",id);
+        if(!record||generation!==previewGeneration||route.name!=="uploads")return;
+        var mime=record.type||type||({JPG:"image/jpeg",JPEG:"image/jpeg",PNG:"image/png",WEBP:"image/webp",HEIC:"image/heic",HEIF:"image/heif"})[ext]||"";
+        var blob=record.data?new Blob([record.data],{type:mime}):record.file;
+        if(!blob)return;
+        var url=URL.createObjectURL(blob),image=new Image();savedPreviewUrls.push(url);
+        image.alt="Dateivorschau";image.onload=function(){if(generation===previewGeneration){node.textContent="";node.appendChild(image);}};image.onerror=function(){node.textContent=ext;};image.src=url;
+      }catch(error){}
+    }));
   }
 
   function attachmentRows(key){
@@ -870,18 +996,20 @@ button{cursor:pointer}
     var tabs=state.selected.map(function(k){return '<button class="area-tab '+(k===key?'active':'')+'" type="button" data-upload-area="'+k+'">'+esc(PROJECTS[k].name)+'</button>';}).join("");
     function savedRow(meta,label,attrs){
       var reduction=meta.optimised&&meta.originalSize>meta.size?' · optimiert von '+formatBytes(meta.originalSize):'';
-      return '<div class="upload-row upload-saved"><div class="upload-name"><div class="upload-file-name">'+esc(meta.name)+'</div><span class="file-meta">'+formatBytes(meta.size)+reduction+'</span>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
+      var ext=fileBadge(meta),displayName=meta.originalName||meta.name;
+      return '<div class="upload-row upload-saved"><div class="file-thumb" data-file-preview="'+esc(meta.fileId||'')+'" data-file-type="'+esc(meta.type||'')+'" data-file-ext="'+esc(ext)+'" aria-hidden="true">'+esc(ext)+'</div><div class="upload-name"><div class="upload-file-name">'+esc(displayName)+'</div><span class="file-meta">'+formatBytes(meta.size)+reduction+'</span>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
     }
     var rows=reqs.map(function(label){
       var files=slotFiles(state,key,label);
       return '<div class="upload-row"><div class="upload-name">'+esc(label)+(files.length?' · '+files.length+' '+(files.length===1?'Datei':'Dateien'):'')+'</div><label class="upload-action" title="Fotos oder Dateien hinzufügen">+<input type="file" multiple aria-label="'+esc(label)+': Fotos oder Dateien hinzufügen" data-upload-slot="'+esc(label)+'" accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>'+files.map(function(meta,index){return savedRow(meta,label+' '+(index+1),'data-upload-slot="'+esc(label)+'" data-slot-index="'+index+'"');}).join("");
     }).join("")+(state.extraUploads[key]||[]).map(function(meta,index){return savedRow(meta,'Zusatzdatei '+(index+1),'data-upload-extra="'+index+'"');}).join("");
-    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+' Pro Ansicht können Sie mehrere Fotos hinzufügen – auch nacheinander.'+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · WEBP · HEIC BIS 25 MB · PDF · SVG · AI · EPS BIS 50 MB</small><input id="extraFiles" type="file" multiple accept="image/*,.pdf,.svg,.ai,.eps" aria-label="Weitere Fotos oder Dateien hinzufügen"'+(uploadBusy?' disabled':'')+'></label><div class="privacy-note"><strong>Upload-Schutz:</strong> Grosse JPG- und WEBP-Bilder werden qualitätsschonend optimiert (max. 5000 px, hohe Qualität). Produktionsdateien und iPhone-Fotos im HEIC-Format bleiben unverändert. <strong>Aufbewahrungsfrist: '+DATA_POLICY.retentionDays+' Tage.</strong> Bitte keine nicht benötigten besonders schützenswerten Personendaten hochladen. <button class="privacy-link" type="button" data-open-privacy>Datenschutzdetails</button></div><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
+    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+' Pro Ansicht können Sie mehrere Fotos hinzufügen – auch nacheinander.'+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Dateien gesammelt hochladen und zuordnen</strong><small>Danach Teilprojekt und Bereich wählen · JPG · PNG · WEBP · HEIC BIS 25 MB · PDF · SVG · AI · EPS BIS 50 MB</small><input id="extraFiles" type="file" multiple accept="image/*,.pdf,.svg,.ai,.eps" aria-label="Dateien gesammelt hochladen und anschliessend zuordnen"'+(uploadBusy?' disabled':'')+'></label><div class="privacy-note"><strong>Upload-Schutz:</strong> Grosse JPG- und WEBP-Bilder werden qualitätsschonend optimiert (max. 5000 px, hohe Qualität). Produktionsdateien und iPhone-Fotos im HEIC-Format bleiben unverändert. <strong>Aufbewahrungsfrist: '+DATA_POLICY.retentionDays+' Tage.</strong> Bitte keine nicht benötigten besonders schützenswerten Personendaten hochladen. <button class="privacy-link" type="button" data-open-privacy>Datenschutzdetails</button></div><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
     bindPrivacyLinks();
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-area]"),function(btn){btn.disabled=uploadBusy;btn.onclick=function(){uploadNotice="";uploadNoticeError=false;state.uploadArea=btn.getAttribute("data-upload-area");saveState();renderUploads();};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-slot]"),function(inp){inp.onchange=function(e){var index=e.target.getAttribute("data-slot-index");addUploadFiles(key,e.target.getAttribute("data-upload-slot"),Array.prototype.slice.call(e.target.files||[]),null,index==null?null:Number(index));};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-extra]"),function(inp){inp.onchange=function(e){var file=e.target.files&&e.target.files[0];if(file)addUploadFiles(key,null,[file],Number(e.target.getAttribute("data-upload-extra")));};});
-    document.getElementById("extraFiles").onchange=function(e){addUploadFiles(key,null,Array.prototype.slice.call(e.target.files||[]));};
+    document.getElementById("extraFiles").onchange=function(e){var files=Array.prototype.slice.call(e.target.files||[]);e.target.value="";openUploadAssignment(files);};
+    loadSavedPreviews();
   }
 
   function completeness(key){var reqs=uploadRequirements(key),done=reqs.filter(function(r){return slotFiles(state,key,r).some(function(meta){return !!meta.fileId;});}).length;return {done:done,total:reqs.length,complete:state.areaData[key].choices.length>0&&done===reqs.length};}
@@ -999,10 +1127,10 @@ button{cursor:pointer}
     var blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=projectFolder()+".json";a.click();setTimeout(function(){URL.revokeObjectURL(url);},10000);
   }
 
-  function resetAll(){if(uploadBusy)return;var previousId=state.requestId;invalidateArchive();state=makeState();uploadNotice="";deleteRequestFiles(previousId).catch(function(){});try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
+  function resetAll(){if(uploadBusy)return;var previousId=state.requestId;invalidateArchive();clearStagedUploads();clearSavedPreviewUrls();state=makeState();uploadNotice="";deleteRequestFiles(previousId).catch(function(){});try{localStorage.removeItem(STORAGE_KEY);}catch(err){}if(resetDialog&&resetDialog.close)resetDialog.close();go("start");}
 
   function init(){
-    screen=document.getElementById("screen");footer=document.getElementById("footer");backBtn=document.getElementById("backBtn");nextBtn=document.getElementById("nextBtn");phaseEl=document.getElementById("progressPhase");countEl=document.getElementById("progressCount");barEl=document.getElementById("progressBar");closeBtn=document.getElementById("closeBtn");resetDialog=document.getElementById("resetDialog");sentDialog=document.getElementById("sentDialog");
+    screen=document.getElementById("screen");footer=document.getElementById("footer");backBtn=document.getElementById("backBtn");nextBtn=document.getElementById("nextBtn");phaseEl=document.getElementById("progressPhase");countEl=document.getElementById("progressCount");barEl=document.getElementById("progressBar");closeBtn=document.getElementById("closeBtn");resetDialog=document.getElementById("resetDialog");sentDialog=document.getElementById("sentDialog");assignmentDialog=document.getElementById("assignmentDialog");
     if(!screen||!footer||!backBtn||!nextBtn||!phaseEl||!countEl||!barEl) return;
     var brand=window.SMARTBRIEF_BRAND||{},logoBox=document.querySelector(".client-logo");
     if(logoBox&&brand.logo&&brand.logo.base64&&brand.logo.mime==="image/jpeg"){
@@ -1012,6 +1140,10 @@ button{cursor:pointer}
     var fallback=document.getElementById("fallbackStartBtn");if(fallback)fallback.onclick=function(){go("select");};
     Array.prototype.forEach.call(document.querySelectorAll("[data-retention-days]"),function(node){node.textContent=DATA_POLICY.retentionDays;});
     var privacyCloseBtn=document.getElementById("privacyCloseBtn");if(privacyCloseBtn)privacyCloseBtn.onclick=function(){document.getElementById("privacyDialog").close();};
+    var assignmentCancelBtn=document.getElementById("assignmentCancelBtn"),assignmentSaveBtn=document.getElementById("assignmentSaveBtn");
+    if(assignmentCancelBtn)assignmentCancelBtn.onclick=function(){if(uploadBusy)return;clearStagedUploads();assignmentDialog.close();};
+    if(assignmentSaveBtn)assignmentSaveBtn.onclick=saveAssignedUploads;
+    if(assignmentDialog)assignmentDialog.addEventListener("cancel",function(event){if(uploadBusy){event.preventDefault();return;}clearStagedUploads();});
     if(closeBtn)closeBtn.onclick=function(){if(resetDialog&&resetDialog.showModal)resetDialog.showModal();else go("start");};
     var continueBtn=document.getElementById("continueBtn"),homeBtn=document.getElementById("homeBtn"),resetBtn=document.getElementById("resetBtn"),exportBtn=document.getElementById("exportBtn"),sentCloseBtn=document.getElementById("sentCloseBtn");
     document.getElementById("zipExportBtn").onclick=prepareProjectZip;
