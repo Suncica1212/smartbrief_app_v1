@@ -1,15 +1,15 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-01_IPAD_UPLOAD_MENU -->
+<!-- SMARTBRIEF_BUILD_2026-09-06_SWISS_PRIVACY_UPLOADS -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Projektanfrage</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+@font-face{font-family:Inter;src:url("assets/fonts/Inter-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("assets/fonts/Inter-Medium.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("assets/fonts/Inter-SemiBold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
 :root{
   --ink:#111315;
   --slate:#566171;
@@ -51,6 +51,7 @@ button{cursor:pointer}
 .summary{margin-top:14px;border:1px solid var(--line)}.summary-row{padding:7px 11px;border-bottom:1px solid var(--line)}.summary-row:last-child{border-bottom:0}.summary-label{color:var(--muted);font-size:7.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}.summary-value{margin-top:3px;font-size:11px;line-height:1.32}.summary-value.muted{color:#9aa1a9}.contact-grid{display:grid;gap:6px;margin-top:9px}.contact-grid input{height:38px}.validation{margin-top:8px;color:var(--danger);font-size:10px;line-height:1.4}
 .contact-grid{align-content:start}.contact-grid .field{scroll-margin-block:16px}.contact-grid input[aria-invalid="true"]{border:2px solid var(--danger)}.field-error{margin:5px 0 0;color:var(--danger);font-size:9.5px;line-height:1.4}.field-error:empty{display:none}
 .upload-status{grid-column:1/-1}.upload-error{color:var(--danger)}.zip-wide{grid-column:1/-1}.zip-download{display:flex;align-items:center;justify-content:center;text-decoration:none}.zip-download[hidden]{display:none}.dialog{width:min(calc(100% - 36px),390px);border:1px solid var(--line);padding:0;background:#fff}.dialog::backdrop{background:rgba(17,19,21,.28)}.dialog-inner{padding:20px}.dialog-actions{display:grid;gap:7px;margin-top:18px}.dialog-actions.two{grid-template-columns:1fr 1fr}
+.privacy-note{margin-top:10px;padding:10px 11px;border-left:2px solid var(--slate);background:var(--soft);color:var(--muted);font-size:9.5px;line-height:1.45}.privacy-note strong{color:var(--ink);font-weight:600}.privacy-consent{display:grid;grid-template-columns:20px 1fr;gap:8px;align-items:start;margin-top:10px;color:var(--muted);font-size:10px;line-height:1.45}.privacy-consent input{width:16px;height:16px;margin:0}.privacy-link{padding:0;border:0;background:none;color:var(--slate);text-decoration:underline;font-size:inherit}.file-meta{display:block;margin-top:2px;color:var(--muted);font-size:8.5px}.policy-list{margin:12px 0 0;padding-left:18px;color:var(--muted);font-size:11px;line-height:1.55}.policy-list li+li{margin-top:5px}
 @media(max-height:700px){.app-header{padding-top:14px}.screen{padding-top:20px}.project-tile{height:98px}.project-tile img{width:44px;height:34px}h1{font-size:18px}}
 
 
@@ -156,33 +157,52 @@ button{cursor:pointer}
     <div class="dialog-inner">
       <p class="eyebrow">TESTMODUS</p>
       <h2>Anfrage vorbereitet.</h2>
-      <p class="body-copy">Die App hat die Anfrage zusammengestellt. Es wurde noch nichts versendet.</p>
+      <p class="body-copy">Die App hat die Anfrage lokal zusammengestellt. Es wurde noch nichts an einen Server übermittelt.</p>
       <div class="dialog-actions two">
         <button id="zipExportBtn" class="nav-button secondary zip-wide" type="button">Projekt als ZIP vorbereiten</button>
         <a id="zipDownloadLink" class="nav-button primary zip-wide zip-download" hidden>ZIP herunterladen</a>
         <p id="zipStatus" class="helper zip-wide" role="status"></p>
-        <form id="emailTestForm" class="zip-wide" method="POST" enctype="multipart/form-data" hidden>
-          <p class="body-copy">Empfangstest: Das Projekt-ZIP wird über FormSubmit an die Testadresse geschickt. Maximal 10 MB. Beim ersten Versand bitte die Bestätigungs-E-Mail von FormSubmit öffnen.</p>
-          <label for="testRecipient">Freigegebene Testadresse · E-Mail</label>
-          <input id="testRecipient" type="email" required autocomplete="off" placeholder="E-Mail-Adresse für den Test">
-          <input id="emailTestAttachment" type="file" name="attachment" hidden>
-          <div id="emailTestFields"></div>
-          <p id="emailTestStatus" class="helper" role="status">Bitte zuerst das Projekt als ZIP vorbereiten.</p>
-          <button id="emailTestSend" class="nav-button primary" type="submit" disabled>Test-ZIP per E-Mail senden</button>
-        </form>
         <button id="exportBtn" class="nav-button secondary" type="button">JSON exportieren</button>
         <button id="sentCloseBtn" class="nav-button primary" type="button">Schliessen</button>
       </div>
     </div>
   </dialog>
 
+  <dialog id="privacyDialog" class="dialog">
+    <div class="dialog-inner">
+      <p class="eyebrow">DATENSCHUTZ & DATENAUFBEWAHRUNG</p>
+      <h2>Ihre Projektdaten bleiben geschützt.</h2>
+      <ul class="policy-list">
+        <li>Bis zum Versand bleiben Eingaben und Dateien ausschliesslich lokal auf diesem Gerät gespeichert.</li>
+        <li>Im produktiven Betrieb werden Projektdaten verschlüsselt an die Infrastruktur der ausführenden Firma übertragen und in der Schweiz verarbeitet und gespeichert.</li>
+        <li>Projektdateien werden standardmässig nach <span data-retention-days>90</span> Tagen automatisch gelöscht. Die ausführende Firma kann 30, 90 oder 180 Tage festlegen.</li>
+        <li>Die ausführende Firma und die anfragende Person erhalten eine Bestätigung. Grosse Dateien werden nicht per E-Mail versandt, sondern über einen zeitlich begrenzten, geschützten Download bereitgestellt.</li>
+        <li>Bitte laden Sie keine nicht benötigten besonders schützenswerten Personendaten hoch.</li>
+      </ul>
+      <div class="dialog-actions"><button id="privacyCloseBtn" class="nav-button primary" type="button">Verstanden</button></div>
+    </div>
+  </dialog>
+
+  <script src="assets/config.js"></script>
   <script src="assets/branding.js"></script>
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-01-ipad-upload-menu";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-06-swiss-privacy-uploads";
 
   var STORAGE_KEY = "smartbrief-v3-state";
+  var DATA_POLICY = Object.assign({
+    storageRegion:"Schweiz",
+    retentionDays:90,
+    retentionOptions:[30,90,180],
+    maxImageBytes:25*1024*1024,
+    maxOptimizedImageBytes:12*1024*1024,
+    maxFileBytes:50*1024*1024,
+    maxProjectBytes:150*1024*1024,
+    imageMaxEdge:5000,
+    imageQuality:.88
+  },window.SMARTBRIEF_DATA_POLICY||{});
+  if(DATA_POLICY.retentionOptions.indexOf(Number(DATA_POLICY.retentionDays))<0)DATA_POLICY.retentionDays=90;
   var PROJECT_ORDER = ["fahrzeug","schaufenster","gebaeude","beschilderung","event","spezialprojekt"];
 
   var PROJECTS = {
@@ -263,7 +283,10 @@ button{cursor:pointer}
       uploads:uploads,
       extraUploads:{},
       planning:{date:"",timing:"",budget:"",remarks:""},
-      contact:{name:"",email:""}
+      contact:{name:"",email:""},
+      privacyAccepted:false,
+      createdAt:new Date().toISOString(),
+      savedAt:new Date().toISOString()
     };
   }
 
@@ -274,6 +297,12 @@ button{cursor:pointer}
       if(!raw) return base;
       var saved = JSON.parse(raw);
       if(!saved || typeof saved !== "object") return base;
+      var savedTime=Date.parse(saved.savedAt||saved.createdAt||"");
+      if(savedTime&&Date.now()-savedTime>DATA_POLICY.retentionDays*86400000){
+        try{localStorage.removeItem(STORAGE_KEY);}catch(ignore){}
+        if(saved.requestId)deleteRequestFiles(saved.requestId).catch(function(){});
+        return base;
+      }
       if(typeof saved.requestId === "string" && /^[a-z0-9-]{8,80}$/i.test(saved.requestId))base.requestId=saved.requestId;
       base.selected = Array.isArray(saved.selected) ? saved.selected.filter(function(k){return PROJECT_ORDER.indexOf(k) >= 0;}) : [];
       base.overview = Object.assign(base.overview, saved.overview || {});
@@ -282,6 +311,9 @@ button{cursor:pointer}
       base.uploadArea = typeof saved.uploadArea === "string" ? saved.uploadArea : "";
       base.planning = Object.assign(base.planning, saved.planning || {});
       base.contact = Object.assign(base.contact, saved.contact || {});
+      base.privacyAccepted = saved.privacyAccepted === true;
+      base.createdAt = typeof saved.createdAt === "string" ? saved.createdAt : base.createdAt;
+      base.savedAt = typeof saved.savedAt === "string" ? saved.savedAt : base.savedAt;
       PROJECT_ORDER.forEach(function(key){
         var incoming = saved.areaData && saved.areaData[key] ? saved.areaData[key] : {};
         if(Array.isArray(incoming.choices)) base.areaData[key].choices = incoming.choices.slice();
@@ -304,6 +336,7 @@ button{cursor:pointer}
 
   function saveState(){
     invalidateArchive();
+    state.savedAt=new Date().toISOString();
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }catch(err){ return false; }
   }
 
@@ -311,6 +344,10 @@ button{cursor:pointer}
     return String(value == null ? "" : value).replace(/[&<>"']/g,function(c){
       return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
     });
+  }
+
+  function bindPrivacyLinks(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-open-privacy]"),function(button){button.onclick=function(){var dialog=document.getElementById("privacyDialog");if(dialog&&dialog.showModal)dialog.showModal();};});
   }
 
   function toggle(arr,value){
@@ -402,9 +439,11 @@ button{cursor:pointer}
       '<p class="eyebrow">PROJEKTANFRAGE</p>'+
       '<h1>Erzählen Sie uns von Ihrem Projekt.</h1>'+
       '<p class="lead">In wenigen Schritten erfassen wir die wichtigsten Angaben für eine erste Beurteilung.</p>'+
+      '<div class="privacy-note"><strong>Datenschutz:</strong> Bis zum Versand bleiben Ihre Angaben auf diesem Gerät. Im produktiven Betrieb erfolgt die sichere Verarbeitung und Speicherung in der Schweiz; Projektdateien werden nach '+DATA_POLICY.retentionDays+' Tagen automatisch gelöscht. <button class="privacy-link" type="button" data-open-privacy>Details</button></div>'+
       '<button id="startBtn" class="start-cta" type="button">Projekt starten</button>'+
       '<div class="micro">CA. 3–5 MINUTEN · KEIN LOGIN NÖTIG</div></section>';
     var startBtn = document.getElementById("startBtn"); if(startBtn) startBtn.onclick = function(){ go("select"); };
+    bindPrivacyLinks();
   }
 
   function renderSelect(){
@@ -516,6 +555,42 @@ button{cursor:pointer}
     return ext?"."+ext:"";
   }
 
+  function formatBytes(bytes){
+    if(bytes<1024*1024)return Math.max(1,Math.round(bytes/1024))+" KB";
+    return (bytes/1024/1024).toFixed(bytes<10?1:0)+" MB";
+  }
+
+  function currentProjectBytes(exceptMeta){
+    var total=0;
+    PROJECT_ORDER.forEach(function(k){Object.keys(state.uploads[k]).forEach(function(slot){slotFiles(state,k,slot).forEach(function(m){if(m!==exceptMeta)total+=Number(m.size)||0;});});(state.extraUploads[k]||[]).forEach(function(m){if(m!==exceptMeta)total+=Number(m.size)||0;});});
+    return total;
+  }
+
+  function validateUpload(file){
+    var ext=fileExtension(file).slice(1),images=["jpg","jpeg","png","webp"],documents=["pdf","svg","ai","eps"];
+    if(images.indexOf(ext)<0&&documents.indexOf(ext)<0)throw new Error("\u00ab"+file.name+"\u00bb hat ein ungeeignetes Format. Erlaubt sind JPG, PNG, WEBP, PDF, SVG, AI und EPS.");
+    var limit=images.indexOf(ext)>=0?DATA_POLICY.maxImageBytes:DATA_POLICY.maxFileBytes;
+    if(file.size>limit)throw new Error("\u00ab"+file.name+"\u00bb ist zu gross. Maximal erlaubt sind "+formatBytes(limit)+" pro "+(images.indexOf(ext)>=0?"Bild":"Datei")+".");
+    if(!file.size)throw new Error("\u00ab"+file.name+"\u00bb ist leer und kann nicht verwendet werden.");
+    return images.indexOf(ext)>=0;
+  }
+
+  async function optimiseImage(file){
+    var isImage=validateUpload(file),ext=fileExtension(file).slice(1);
+    if(!isImage||ext==="png"||file.size<=4*1024*1024)return {file:file,optimised:false,originalSize:file.size};
+    var bitmap;
+    try{bitmap=await createImageBitmap(file,{imageOrientation:"from-image"});}catch(err){throw new Error("\u00ab"+file.name+"\u00bb konnte nicht als Bild gelesen werden. Bitte als JPG, PNG oder WEBP neu speichern.");}
+    var scale=Math.min(1,DATA_POLICY.imageMaxEdge/Math.max(bitmap.width,bitmap.height));
+    var canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+    var context=canvas.getContext("2d",{alpha:false});context.fillStyle="#fff";context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(bitmap,0,0,canvas.width,canvas.height);if(bitmap.close)bitmap.close();
+    var blob=await new Promise(function(resolve){canvas.toBlob(resolve,"image/jpeg",DATA_POLICY.imageQuality);});
+    if(!blob)throw new Error("\u00ab"+file.name+"\u00bb konnte nicht optimiert werden.");
+    if(blob.size>DATA_POLICY.maxOptimizedImageBytes)throw new Error("\u00ab"+file.name+"\u00bb bleibt auch nach der Optimierung zu gross. Bitte mit geringerer Auflösung speichern.");
+    if(blob.size>=file.size)return {file:file,optimised:false,originalSize:file.size};
+    var jpgName=file.name.replace(/\.[^.]+$/,".jpg");
+    return {file:new File([blob],jpgName,{type:"image/jpeg",lastModified:file.lastModified}),optimised:true,originalSize:file.size};
+  }
+
   function uploadBaseName(key,label,index){
     var views={"Vorderseite":"vorne","Rückseite":"hinten","Linke Seite":"linke_seite","Rechte Seite":"rechte_seite"};
     var suffix=label?(key==="fahrzeug"&&views[label]?views[label]:fileSlug(label.replace(/^(Foto|Montageort):\s*/,""))):"zusatz_"+String(index+1).padStart(2,"0");
@@ -598,7 +673,9 @@ button{cursor:pointer}
     var list=label?slotFiles(owner,key,label):owner.extraUploads[key];
     var requestedIndex=label?slotIndex:extraIndex,index=requestedIndex==null?list.length:requestedIndex;
     var previous=list[index],previousSlot=label?owner.uploads[key][label]:null;
-    var id=newId(),meta={fileId:id,name:"",originalName:file.name,size:file.size,type:file.type,lastModified:file.lastModified};
+    var prepared=await optimiseImage(file);file=prepared.file;
+    if(currentProjectBytes(previous)+file.size>DATA_POLICY.maxProjectBytes)throw new Error("Die Projektdateien überschreiten zusammen "+formatBytes(DATA_POLICY.maxProjectBytes)+". Bitte nicht benötigte Dateien entfernen oder verkleinern.");
+    var id=newId(),meta={fileId:id,name:"",originalName:file.name,size:file.size,originalSize:prepared.originalSize,optimised:prepared.optimised,type:file.type,lastModified:file.lastModified};
     var used=[];
     PROJECT_ORDER.forEach(function(k){Object.keys(owner.uploads[k]).forEach(function(slot){slotFiles(owner,k,slot).forEach(function(m){if(m!==previous)used.push(m.name);});});(owner.extraUploads[k]||[]).forEach(function(m){if(m!==previous)used.push(m.name);});});
     var base=uploadBaseName(key,label,index)+(label?"_"+String(index+1).padStart(2,"0"):"");
@@ -619,11 +696,11 @@ button{cursor:pointer}
 
   async function addUploadFiles(key,label,files,extraIndex,slotIndex){
     if(uploadBusy||!files.length)return;
-    uploadBusy=true;uploadNotice="Dateien werden gespeichert …";uploadNoticeError=false;renderUploads();
+    uploadBusy=true;uploadNotice="Dateien werden geprüft und Bilder bei Bedarf optimiert …";uploadNoticeError=false;renderUploads();
     var done=0;
     try{
       for(var i=0;i<files.length;i++){await saveUploadFile(key,label,files[i],extraIndex,slotIndex);done++;}
-      uploadNotice=done===1?"Datei gespeichert.":done+" Dateien gespeichert.";
+      uploadNotice=done===1?"Datei sicher lokal vorbereitet.":done+" Dateien sicher lokal vorbereitet.";
     }catch(error){
       uploadNoticeError=true;uploadNotice=(done?done+" Dateien gespeichert. ":"")+"Weitere Speicherung nicht möglich. "+(error.message||"Bitte erneut versuchen.");
     }finally{
@@ -644,10 +721,6 @@ button{cursor:pointer}
 
   function invalidateArchive(){
     archiveRevision++;
-    var testButton=document.getElementById("emailTestSend"),testFile=document.getElementById("emailTestAttachment");
-    if(testButton)testButton.disabled=true;
-    if(testFile)testFile.value="";
-    var testStatus=document.getElementById("emailTestStatus");if(testStatus)testStatus.textContent="Bitte zuerst das Projekt als ZIP vorbereiten.";
     if(zipObjectUrl){URL.revokeObjectURL(zipObjectUrl);zipObjectUrl="";}
     var link=document.getElementById("zipDownloadLink");if(link){link.hidden=true;link.removeAttribute("href");}
   }
@@ -691,6 +764,10 @@ button{cursor:pointer}
     Object.keys(payload.planning||{}).forEach(function(key){if(payload.planning[key])rows.push({text:pdfFieldLabel(key)+": "+payload.planning[key]});});
     rows.push({text:"Kontakt",style:"heading"});
     Object.keys(payload.contact||{}).forEach(function(key){if(payload.contact[key])rows.push({text:pdfFieldLabel(key)+": "+payload.contact[key]});});
+    rows.push({text:"Datenschutz und Aufbewahrung",style:"heading"});
+    rows.push({text:"Speicherregion: "+payload.dataPolicy.storageRegion});
+    rows.push({text:"Aufbewahrungsfrist: "+payload.dataPolicy.retentionDays+" Tage; anschliessend automatische Löschung."});
+    rows.push({text:"Bestätigung an ausführende Firma und anfragende Person; grosse Dateien über geschützten, zeitlich begrenzten Download."});
     return rows;
   }
 
@@ -770,35 +847,8 @@ button{cursor:pointer}
       if(revision!==archiveRevision)throw new Error("Die Anfrage wurde geändert. Bitte ZIP erneut vorbereiten.");
       zipObjectUrl=URL.createObjectURL(archive);link.href=zipObjectUrl;link.download=payload.project.folder+".zip";link.hidden=false;
       status.textContent=attachments.length+" Dateien und Projektangaben sind bereit.";
-      prepareEmailTest(archive,payload,attachments);
     }catch(error){status.textContent=error.message||"ZIP konnte nicht erstellt werden. Bitte erneut versuchen.";}
     finally{button.disabled=false;}
-  }
-
-  async function approvedTestRecipient(value){
-    var email=value.trim().toLowerCase();
-    var digest=await window.crypto.subtle.digest("SHA-256",new TextEncoder().encode(email));
-    var hex=Array.from(new Uint8Array(digest)).map(function(byte){return byte.toString(16).padStart(2,"0");}).join("");
-    // This test is restricted to the single recipient explicitly approved by the owner.
-    if(hex!=="3e6219ae8caae3a4a12ecc7cd5f4e73c7ac8d57b46961c47cac7e19504e3aff3")throw new Error("Bitte die freigegebene Testadresse verwenden. Andere Empfänger sind für diesen Test gesperrt.");
-    return email;
-  }
-
-  function prepareEmailTest(archive,payload,attachments){
-    var form=document.getElementById("emailTestForm");
-    if(!form||form.hidden)return;
-    var status=document.getElementById("emailTestStatus"),button=document.getElementById("emailTestSend");
-    button.disabled=true;
-    if(archive.size>10000000){status.textContent="Das ZIP ist grösser als 10 MB und kann mit diesem Testdienst nicht verschickt werden. Bitte für den Empfangstest weniger Dateien verwenden. Der ZIP-Download enthält weiterhin alle Dateien.";return;}
-    try{
-      var transfer=new DataTransfer();transfer.items.add(new File([archive],payload.project.folder+".zip",{type:"application/zip"}));
-      document.getElementById("emailTestAttachment").files=transfer.files;
-      var fields=document.getElementById("emailTestFields");fields.textContent="";
-      var values={_subject:"SmartBrief Empfangstest – "+(payload.project.projectName||"Projektanfrage"),_template:"table",name:payload.contact.name,email:payload.contact.email,Projekt:payload.project.projectName||"Projektanfrage",Anfragekennung:payload.project.requestId,Dateien:attachments.map(function(f){return f.meta.name;}).join("\n"),Hinweis:"Empfangstest mit Projekt-ZIP. Bitte ZIP entpacken und alle aufgeführten Dateien prüfen."};
-      Object.keys(values).forEach(function(key){var input=document.createElement("input");input.type="hidden";input.name=key;input.value=values[key];fields.appendChild(input);});
-      status.textContent=attachments.length+" Dateien im ZIP bereit ("+(archive.size/1000000).toFixed(2)+" MB). Nach dem Klick öffnet sich FormSubmit. Bitte dort die Versand- oder Aktivierungsanzeige beachten.";
-      button.disabled=false;
-    }catch(error){status.textContent="Dieser Browser kann das ZIP nicht direkt an das Formular übergeben. Bitte das ZIP herunterladen und den Test in einem aktuellen Browser wiederholen.";}
   }
 
   function renderUploads(){
@@ -807,13 +857,15 @@ button{cursor:pointer}
     setFooter({back:function(){go("design");},next:function(){go("check");}});
     var tabs=state.selected.map(function(k){return '<button class="area-tab '+(k===key?'active':'')+'" type="button" data-upload-area="'+k+'">'+esc(PROJECTS[k].name)+'</button>';}).join("");
     function savedRow(meta,label,attrs){
-      return '<div class="upload-row upload-saved"><div class="upload-name"><div class="upload-file-name">'+esc(meta.name)+'</div>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
+      var reduction=meta.optimised&&meta.originalSize>meta.size?' · optimiert von '+formatBytes(meta.originalSize):'';
+      return '<div class="upload-row upload-saved"><div class="upload-name"><div class="upload-file-name">'+esc(meta.name)+'</div><span class="file-meta">'+formatBytes(meta.size)+reduction+'</span>'+(!meta.fileId?'<div class="field-error">Bitte Datei erneut hinzufügen.</div>':'')+'</div><label class="upload-action" title="Datei ersetzen">'+(meta.fileId?'✓':'+')+'<input type="file" aria-label="'+esc(label)+': Datei ersetzen" '+attrs+' accept=".jpg,.jpeg,.png,.webp,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>';
     }
     var rows=reqs.map(function(label){
       var files=slotFiles(state,key,label);
-      return '<div class="upload-row"><div class="upload-name">'+esc(label)+(files.length?' · '+files.length+' '+(files.length===1?'Datei':'Dateien'):'')+'</div><label class="upload-action" title="Fotos oder Dateien hinzufügen">+<input type="file" multiple aria-label="'+esc(label)+': Fotos oder Dateien hinzufügen" data-upload-slot="'+esc(label)+'" accept="image/*,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>'+files.map(function(meta,index){return savedRow(meta,label+' '+(index+1),'data-upload-slot="'+esc(label)+'" data-slot-index="'+index+'"');}).join("");
+      return '<div class="upload-row"><div class="upload-name">'+esc(label)+(files.length?' · '+files.length+' '+(files.length===1?'Datei':'Dateien'):'')+'</div><label class="upload-action" title="Fotos oder Dateien hinzufügen">+<input type="file" multiple aria-label="'+esc(label)+': Fotos oder Dateien hinzufügen" data-upload-slot="'+esc(label)+'" accept=".jpg,.jpeg,.png,.webp,.pdf,.svg,.ai,.eps"'+(uploadBusy?' disabled':'')+'></label></div>'+files.map(function(meta,index){return savedRow(meta,label+' '+(index+1),'data-upload-slot="'+esc(label)+'" data-slot-index="'+index+'"');}).join("");
     }).join("")+(state.extraUploads[key]||[]).map(function(meta,index){return savedRow(meta,'Zusatzdatei '+(index+1),'data-upload-extra="'+index+'"');}).join("");
-    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+' Pro Ansicht können Sie mehrere Fotos hinzufügen – auch nacheinander.'+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · PDF · SVG · AI · EPS</small><input id="extraFiles" type="file" multiple aria-label="Weitere Fotos oder Dateien hinzufügen"'+(uploadBusy?' disabled':'')+'></label><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
+    screen.innerHTML='<p class="eyebrow">FOTOS & DATEIEN</p><h1>Zeigen Sie uns Ihr Projekt.</h1><div class="area-tabs">'+tabs+'</div><p class="helper">'+(key==='fahrzeug'?'Für Fahrzeuge helfen vier klare Ansichten.':'Die Dateien werden dem ausgewählten Projektbereich zugeordnet.')+' Pro Ansicht können Sie mehrere Fotos hinzufügen – auch nacheinander.'+'</p><div class="upload-box"><div class="upload-title">'+esc(cfg.name)+' · Dateien</div>'+rows+'</div><label class="drop-zone"><strong>Weitere Fotos oder Dateien hinzufügen</strong><small>JPG · PNG · WEBP BIS 25 MB · PDF · SVG · AI · EPS BIS 50 MB</small><input id="extraFiles" type="file" multiple accept=".jpg,.jpeg,.png,.webp,.pdf,.svg,.ai,.eps" aria-label="Weitere Fotos oder Dateien hinzufügen"'+(uploadBusy?' disabled':'')+'></label><div class="privacy-note"><strong>Upload-Schutz:</strong> Grosse JPG- und WEBP-Bilder werden qualitätsschonend optimiert (max. 5000 px, hohe Qualität). Produktionsdateien bleiben unverändert. Bitte keine nicht benötigten besonders schützenswerten Personendaten hochladen. <button class="privacy-link" type="button" data-open-privacy>Datenschutzdetails</button></div><p id="uploadStatus" class="helper upload-status '+(uploadNoticeError?'upload-error':'')+'" role="status">'+esc(uploadNotice)+'</p>';
+    bindPrivacyLinks();
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-area]"),function(btn){btn.disabled=uploadBusy;btn.onclick=function(){uploadNotice="";uploadNoticeError=false;state.uploadArea=btn.getAttribute("data-upload-area");saveState();renderUploads();};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-slot]"),function(inp){inp.onchange=function(e){var index=e.target.getAttribute("data-slot-index");addUploadFiles(key,e.target.getAttribute("data-upload-slot"),Array.prototype.slice.call(e.target.files||[]),null,index==null?null:Number(index));};});
     Array.prototype.forEach.call(screen.querySelectorAll("[data-upload-extra]"),function(inp){inp.onchange=function(e){var file=e.target.files&&e.target.files[0];if(file)addUploadFiles(key,null,[file],Number(e.target.getAttribute("data-upload-extra")));};});
@@ -886,8 +938,10 @@ button{cursor:pointer}
     var meta=[state.overview.projectName,state.overview.location,context].filter(Boolean).join(" · ")||"—";
     var areaRows=state.selected.map(function(key){return '<div class="summary-row"><div class="summary-label">'+esc(PROJECTS[key].name)+'</div><div class="summary-value">'+esc(areaSummary(key))+'</div></div>';}).join("");
     var timing=[state.planning.date,state.planning.timing].filter(Boolean).join(" · ")||"—";
-    screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><div class="field"><label for="contactName">Vorname und Nachname · Pflichtfeld</label><input id="contactName" autocomplete="name" required aria-describedby="contactNameError" aria-invalid="false" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><p id="contactNameError" class="field-error"></p></div><div class="field"><label for="contactEmail">E-Mail · Pflichtfeld</label><input id="contactEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" required aria-describedby="contactEmailError" aria-invalid="false" placeholder="E-Mail" value="'+esc(state.contact.email)+'"><p id="contactEmailError" class="field-error"></p></div></div>';
+    screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><div class="field"><label for="contactName">Vorname und Nachname · Pflichtfeld</label><input id="contactName" autocomplete="name" required aria-describedby="contactNameError" aria-invalid="false" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><p id="contactNameError" class="field-error"></p></div><div class="field"><label for="contactEmail">E-Mail · Pflichtfeld</label><input id="contactEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" required aria-describedby="contactEmailError" aria-invalid="false" placeholder="E-Mail" value="'+esc(state.contact.email)+'"><p id="contactEmailError" class="field-error"></p></div><label class="privacy-consent"><input id="privacyAccepted" type="checkbox" '+(state.privacyAccepted?'checked':'')+'><span>Ich habe die <button class="privacy-link" type="button" data-open-privacy>Datenschutz- und Aufbewahrungsinformationen</button> gelesen. <strong>Pflichtfeld</strong></span></label><p id="privacyError" class="field-error"></p><div class="privacy-note"><strong>Sichere Übermittlung:</strong> Im produktiven Betrieb erhalten Sie und die ausführende Firma eine Bestätigung. Grosse Projektdateien werden über einen geschützten, zeitlich begrenzten Download bereitgestellt.</div></div>';
     document.getElementById("contactName").oninput=function(e){state.contact.name=e.target.value;saveState();if(contactValidationShown)validateContactDetails();};document.getElementById("contactEmail").oninput=function(e){state.contact.email=e.target.value;saveState();if(contactValidationShown)validateContactDetails();};
+    document.getElementById("privacyAccepted").onchange=function(e){state.privacyAccepted=e.target.checked;saveState();if(contactValidationShown)validateContactDetails();};
+    bindPrivacyLinks();
   }
 
   function validateContactDetails(){
@@ -897,7 +951,9 @@ button{cursor:pointer}
     email.setAttribute("aria-invalid",String(!emailOk));
     document.getElementById("contactNameError").textContent=nameOk?"":"Bitte Vorname und Nachname eingeben.";
     document.getElementById("contactEmailError").textContent=emailOk?"":(state.contact.email.trim()?"Bitte eine gültige E-Mail-Adresse eingeben.":"Bitte E-Mail-Adresse eingeben.");
-    return !nameOk?name:(!emailOk?email:null);
+    var privacy=document.getElementById("privacyAccepted"),privacyOk=state.privacyAccepted===true;
+    if(privacy){privacy.setAttribute("aria-invalid",String(!privacyOk));document.getElementById("privacyError").textContent=privacyOk?"":"Bitte bestätigen Sie die Datenschutz- und Aufbewahrungsinformationen.";}
+    return !nameOk?name:(!emailOk?email:(!privacyOk?privacy:null));
   }
 
   function sendTest(){
@@ -914,7 +970,8 @@ button{cursor:pointer}
     if(sentDialog && sentDialog.showModal) sentDialog.showModal();
   }
   function projectPayload(){
-    var payload={createdAt:new Date().toISOString(),project:Object.assign({},state.overview,{requestId:state.requestId,folder:projectFolder(),contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:Object.assign({},state.planning),contact:Object.assign({},state.contact)};
+    var company=(window.SMARTBRIEF_BRAND||{}).name||"Ausführende Firma",projectName=state.overview.projectName||"Projektanfrage";
+    var payload={createdAt:new Date().toISOString(),dataPolicy:{storageRegion:DATA_POLICY.storageRegion,retentionDays:DATA_POLICY.retentionDays,automaticDeletion:true,secureDownloadForLargeFiles:true},delivery:{confirmationRecipients:["executingCompany","requester"],confirmationSubject:projectName+" · "+company,largeFiles:"secureExpiringDownload"},project:Object.assign({},state.overview,{requestId:state.requestId,folder:projectFolder(),contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:Object.assign({},state.planning),contact:Object.assign({},state.contact)};
     state.selected.forEach(function(key){
       var data=state.areaData[key],items=Object.assign({},data.items),files={};
       if(items.Sonstiges && data.choices.indexOf("Sonstiges")<0)items.Sonstiges=Object.assign({},items.Sonstiges,{comment:""});
@@ -941,25 +998,11 @@ button{cursor:pointer}
       logoBox.textContent="";logoBox.appendChild(logoImage);logoBox.setAttribute("aria-label",brand.name||"Firmenlogo");logoBox.closest(".header-row").classList.add("has-logo");
     }
     var fallback=document.getElementById("fallbackStartBtn");if(fallback)fallback.onclick=function(){go("select");};
+    Array.prototype.forEach.call(document.querySelectorAll("[data-retention-days]"),function(node){node.textContent=DATA_POLICY.retentionDays;});
+    var privacyCloseBtn=document.getElementById("privacyCloseBtn");if(privacyCloseBtn)privacyCloseBtn.onclick=function(){document.getElementById("privacyDialog").close();};
     if(closeBtn)closeBtn.onclick=function(){if(resetDialog&&resetDialog.showModal)resetDialog.showModal();else go("start");};
     var continueBtn=document.getElementById("continueBtn"),homeBtn=document.getElementById("homeBtn"),resetBtn=document.getElementById("resetBtn"),exportBtn=document.getElementById("exportBtn"),sentCloseBtn=document.getElementById("sentCloseBtn");
     document.getElementById("zipExportBtn").onclick=prepareProjectZip;
-    var emailForm=document.getElementById("emailTestForm");
-    emailForm.hidden=new URLSearchParams(location.search).get("versandtest")!=="1";
-    emailForm.onsubmit=async function(e){
-      e.preventDefault();
-      var recipient=document.getElementById("testRecipient"),attachment=document.getElementById("emailTestAttachment"),button=document.getElementById("emailTestSend"),status=document.getElementById("emailTestStatus");
-      recipient.value=recipient.value.trim();
-      if(!recipient.checkValidity()||!attachment.files.length||button.disabled){recipient.reportValidity();return;}
-      var revision=archiveRevision;button.disabled=true;
-      try{
-        var target=await approvedTestRecipient(recipient.value);
-        if(revision!==archiveRevision||!attachment.files.length)throw new Error("Bitte das ZIP erneut vorbereiten.");
-        emailForm.action="https://formsubmit.co/"+encodeURIComponent(target);
-        status.textContent="Test-ZIP wird an FormSubmit übergeben. Bitte die folgende Anzeige beachten.";
-        HTMLFormElement.prototype.submit.call(emailForm);
-      }catch(error){status.textContent=error.message||"Testversand konnte nicht gestartet werden.";button.disabled=!attachment.files.length;}
-    };
     saveState();
     if(continueBtn)continueBtn.onclick=function(){resetDialog.close();};if(homeBtn)homeBtn.onclick=function(){resetDialog.close();go("start");};if(resetBtn)resetBtn.onclick=resetAll;if(exportBtn)exportBtn.onclick=exportJson;if(sentCloseBtn)sentCloseBtn.onclick=function(){sentDialog.close();};
     window.addEventListener("hashchange",function(){route=parseRoute();render();});
