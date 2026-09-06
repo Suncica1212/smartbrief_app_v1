@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-06_IOS_PHOTO_UPLOAD_FIX -->
+<!-- SMARTBRIEF_BUILD_2026-09-06_SAFARI_INDEXEDDB_FIX -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -188,7 +188,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-06-ios-photo-upload-fix";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-06-safari-indexeddb-fix";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var DATA_POLICY = Object.assign({
@@ -575,14 +575,23 @@ button{cursor:pointer}
     return images.indexOf(ext)>=0;
   }
 
+  function loadImageForCanvas(file){
+    return new Promise(function(resolve,reject){
+      var url=URL.createObjectURL(file),image=new Image();
+      image.onload=function(){resolve({image:image,url:url});};
+      image.onerror=function(){URL.revokeObjectURL(url);reject(new Error("Bild konnte nicht gelesen werden."));};
+      image.src=url;
+    });
+  }
+
   async function optimiseImage(file){
     var isImage=validateUpload(file),ext=fileExtension(file).slice(1);
     if(!isImage||ext==="png"||ext==="heic"||ext==="heif"||file.size<=4*1024*1024)return {file:file,optimised:false,originalSize:file.size};
-    var bitmap;
-    try{bitmap=await createImageBitmap(file,{imageOrientation:"from-image"});}catch(err){throw new Error("\u00ab"+file.name+"\u00bb konnte nicht als Bild gelesen werden. Bitte als JPG, PNG oder WEBP neu speichern.");}
-    var scale=Math.min(1,DATA_POLICY.imageMaxEdge/Math.max(bitmap.width,bitmap.height));
-    var canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
-    var context=canvas.getContext("2d",{alpha:false});context.fillStyle="#fff";context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(bitmap,0,0,canvas.width,canvas.height);if(bitmap.close)bitmap.close();
+    var loaded;
+    try{loaded=await loadImageForCanvas(file);}catch(err){throw new Error("\u00ab"+file.name+"\u00bb konnte nicht als Bild gelesen werden. Bitte als JPG, PNG oder WEBP neu speichern.");}
+    var bitmap=loaded.image,scale=Math.min(1,DATA_POLICY.imageMaxEdge/Math.max(bitmap.naturalWidth,bitmap.naturalHeight));
+    var canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.naturalWidth*scale));canvas.height=Math.max(1,Math.round(bitmap.naturalHeight*scale));
+    var context=canvas.getContext("2d",{alpha:false});context.fillStyle="#fff";context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(bitmap,0,0,canvas.width,canvas.height);URL.revokeObjectURL(loaded.url);
     var blob=await new Promise(function(resolve){canvas.toBlob(resolve,"image/jpeg",DATA_POLICY.imageQuality);});
     if(!blob)throw new Error("\u00ab"+file.name+"\u00bb konnte nicht optimiert werden.");
     if(blob.size>DATA_POLICY.maxOptimizedImageBytes)throw new Error("\u00ab"+file.name+"\u00bb bleibt auch nach der Optimierung zu gross. Bitte mit geringerer Auflösung speichern.");
@@ -680,8 +689,9 @@ button{cursor:pointer}
     PROJECT_ORDER.forEach(function(k){Object.keys(owner.uploads[k]).forEach(function(slot){slotFiles(owner,k,slot).forEach(function(m){if(m!==previous)used.push(m.name);});});(owner.extraUploads[k]||[]).forEach(function(m){if(m!==previous)used.push(m.name);});});
     var base=uploadBaseName(key,label,index)+(label?"_"+String(index+1).padStart(2,"0"):"");
     meta.name=uniqueUploadName(base,fileExtension(meta),used);
-    var renamed=new File([file],meta.name,{type:file.type,lastModified:file.lastModified});
-    await fileStore("put",{id:id,requestId:requestId,file:renamed});
+    var bytes;
+    try{bytes=await file.arrayBuffer();}catch(readError){throw new Error("\u00ab"+file.name+"\u00bb konnte auf diesem Gerät nicht gelesen werden. Bitte erneut auswählen.");}
+    await fileStore("put",{id:id,requestId:requestId,data:bytes,name:meta.name,type:file.type,lastModified:file.lastModified});
     if(state!==owner){await fileStore("delete",id);throw new Error("Die Anfrage wurde inzwischen neu gestartet. Bitte Datei erneut auswählen.");}
     list[index]=meta;if(label)owner.uploads[key][label]=list;
     if(!saveState()){
@@ -829,8 +839,9 @@ button{cursor:pointer}
     zip.file(folder+"/projektanfrage.pdf",buildProjectPdf(payload),{binary:true,compression:"STORE"});
     for(var i=0;i<attachments.length;i++){
       var meta=attachments[i].meta,record=meta.fileId?await fileStore("get",meta.fileId):null;
-      if(!record||record.requestId!==payload.project.requestId||!record.file){missing.push(meta.name);continue;}
-      zip.file(folder+"/"+meta.name,record.file.arrayBuffer(),{compression:"STORE"});
+      if(!record||record.requestId!==payload.project.requestId||(!record.data&&!record.file)){missing.push(meta.name);continue;}
+      var content=record.data||(record.file&&record.file.arrayBuffer?record.file.arrayBuffer():record.file);
+      zip.file(folder+"/"+meta.name,content,{binary:true,compression:"STORE"});
     }
     if(missing.length)throw new Error("Bitte diese Dateien im Upload-Bereich erneut hinzufügen: "+missing.join(", ")+".");
     return zip.generateAsync({type:"blob",compression:"STORE"});
