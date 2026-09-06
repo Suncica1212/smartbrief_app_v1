@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SMARTBRIEF_BUILD_2026-09-06_IPAD_TIMING_HEIGHT_FIX -->
+<!-- SMARTBRIEF_BUILD_2026-09-06_SECURE_DOWNLOAD_WORDING -->
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -179,7 +179,7 @@ button{cursor:pointer}
         <li>Bis zum Versand bleiben Eingaben und Dateien ausschliesslich lokal auf diesem Gerät gespeichert.</li>
         <li>Im produktiven Betrieb werden Projektdaten verschlüsselt an die Infrastruktur der ausführenden Firma übertragen und in der Schweiz verarbeitet und gespeichert.</li>
         <li><strong>Geltende Aufbewahrungsfrist: <span data-retention-days>90</span> Tage.</strong> Diese Frist wird von der ausführenden Firma festgelegt. Danach werden die Projektdateien automatisch gelöscht.</li>
-        <li>Die ausführende Firma und die anfragende Person erhalten eine Bestätigung. Grosse Dateien werden nicht per E-Mail versandt, sondern über einen zeitlich begrenzten, geschützten Download bereitgestellt.</li>
+        <li>Die ausführende Firma und die anfragende Person erhalten eine Bestätigung per E-Mail. Die Projektunterlagen und sämtliche Dateien werden ausschliesslich über einen geschützten, zeitlich begrenzten Download-Link bereitgestellt.</li>
         <li>Bitte laden Sie keine nicht benötigten besonders schützenswerten Personendaten hoch.</li>
       </ul>
       <div class="dialog-actions"><button id="privacyCloseBtn" class="nav-button primary" type="button">Verstanden</button></div>
@@ -209,7 +209,7 @@ button{cursor:pointer}
   <script>
 (function(){
   "use strict";
-  window.__SMARTBRIEF_VERSION__ = "2026-09-06-ipad-timing-height-fix";
+  window.__SMARTBRIEF_VERSION__ = "2026-09-06-secure-download-wording";
 
   var STORAGE_KEY = "smartbrief-v3-state";
   var DATA_POLICY = Object.assign({
@@ -904,7 +904,7 @@ button{cursor:pointer}
     rows.push({text:"Datenschutz und Aufbewahrung",style:"heading"});
     rows.push({text:"Speicherregion: "+payload.dataPolicy.storageRegion});
     rows.push({text:"Aufbewahrungsfrist: "+payload.dataPolicy.retentionDays+" Tage; anschliessend automatische Löschung."});
-    rows.push({text:"Bestätigung an ausführende Firma und anfragende Person; grosse Dateien über geschützten, zeitlich begrenzten Download."});
+    rows.push({text:"Bestätigung per E-Mail an ausführende Firma und anfragende Person; Projektunterlagen und sämtliche Dateien ausschliesslich über einen geschützten, zeitlich begrenzten Download-Link."});
     return rows;
   }
 
@@ -1078,7 +1078,7 @@ button{cursor:pointer}
     var meta=[state.overview.projectName,state.overview.location,context].filter(Boolean).join(" · ")||"—";
     var areaRows=state.selected.map(function(key){return '<div class="summary-row"><div class="summary-label">'+esc(PROJECTS[key].name)+'</div><div class="summary-value">'+esc(areaSummary(key))+'</div></div>';}).join("");
     var timing=[state.planning.date,state.planning.timing].filter(Boolean).join(" · ")||"—";
-    screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><div class="field"><label for="contactName">Vorname und Nachname · Pflichtfeld</label><input id="contactName" autocomplete="name" required aria-describedby="contactNameError" aria-invalid="false" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><p id="contactNameError" class="field-error"></p></div><div class="field"><label for="contactEmail">E-Mail · Pflichtfeld</label><input id="contactEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" required aria-describedby="contactEmailError" aria-invalid="false" placeholder="E-Mail" value="'+esc(state.contact.email)+'"><p id="contactEmailError" class="field-error"></p></div><label class="privacy-consent"><input id="privacyAccepted" type="checkbox" '+(state.privacyAccepted?'checked':'')+'><span>Ich habe die <button class="privacy-link" type="button" data-open-privacy>Datenschutz- und Aufbewahrungsinformationen</button> gelesen. <strong>Pflichtfeld</strong></span></label><p id="privacyError" class="field-error"></p><div class="privacy-note"><strong>Aufbewahrungsfrist: '+DATA_POLICY.retentionDays+' Tage.</strong> Diese Frist wurde von der ausführenden Firma festgelegt. Danach werden die Projektdateien automatisch gelöscht.<br><br><strong>Sichere Übermittlung:</strong> Im produktiven Betrieb erhalten Sie und die ausführende Firma eine Bestätigung. Grosse Projektdateien werden über einen geschützten, zeitlich begrenzten Download bereitgestellt.</div></div>';
+    screen.innerHTML='<p class="eyebrow">ZUSAMMENFASSUNG</p><h1>Ihr Projekt auf einen Blick.</h1><div class="summary"><div class="summary-row"><div class="summary-label">Projekt</div><div class="summary-value">'+esc(meta)+'</div></div>'+areaRows+'<div class="summary-row"><div class="summary-label">Gestaltung</div><div class="summary-value">'+esc(state.design||"—")+'</div></div><div class="summary-row"><div class="summary-label">Termin</div><div class="summary-value">'+esc(timing)+'</div></div>'+(state.planning.remarks.trim()?'<div class="summary-row"><div class="summary-label">Bemerkungen</div><div class="summary-value">'+esc(state.planning.remarks)+'</div></div>':'')+'</div><div class="contact-grid"><div class="field"><label for="contactName">Vorname und Nachname · Pflichtfeld</label><input id="contactName" autocomplete="name" required aria-describedby="contactNameError" aria-invalid="false" placeholder="Vorname und Nachname" value="'+esc(state.contact.name)+'"><p id="contactNameError" class="field-error"></p></div><div class="field"><label for="contactEmail">E-Mail · Pflichtfeld</label><input id="contactEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" required aria-describedby="contactEmailError" aria-invalid="false" placeholder="E-Mail" value="'+esc(state.contact.email)+'"><p id="contactEmailError" class="field-error"></p></div><label class="privacy-consent"><input id="privacyAccepted" type="checkbox" '+(state.privacyAccepted?'checked':'')+'><span>Ich habe die <button class="privacy-link" type="button" data-open-privacy>Datenschutz- und Aufbewahrungsinformationen</button> gelesen. <strong>Pflichtfeld</strong></span></label><p id="privacyError" class="field-error"></p><div class="privacy-note"><strong>Aufbewahrungsfrist: '+DATA_POLICY.retentionDays+' Tage.</strong> Diese Frist wurde von der ausführenden Firma festgelegt. Danach werden die Projektdateien automatisch gelöscht.<br><br><strong>Sichere Übermittlung:</strong> Im produktiven Betrieb erhalten Sie und die ausführende Firma eine Bestätigung per E-Mail. Die Projektunterlagen und sämtliche Dateien werden ausschliesslich über einen geschützten, zeitlich begrenzten Download-Link bereitgestellt.</div></div>';
     document.getElementById("contactName").oninput=function(e){state.contact.name=e.target.value;saveState();if(contactValidationShown)validateContactDetails();};document.getElementById("contactEmail").oninput=function(e){state.contact.email=e.target.value;saveState();if(contactValidationShown)validateContactDetails();};
     document.getElementById("privacyAccepted").onchange=function(e){state.privacyAccepted=e.target.checked;saveState();if(contactValidationShown)validateContactDetails();};
     bindPrivacyLinks();
@@ -1111,7 +1111,7 @@ button{cursor:pointer}
   }
   function projectPayload(){
     var company=(window.SMARTBRIEF_BRAND||{}).name||"Ausführende Firma",projectName=state.overview.projectName||"Projektanfrage";
-    var payload={createdAt:new Date().toISOString(),dataPolicy:{storageRegion:DATA_POLICY.storageRegion,retentionDays:DATA_POLICY.retentionDays,automaticDeletion:true,secureDownloadForLargeFiles:true},delivery:{confirmationRecipients:["executingCompany","requester"],confirmationSubject:projectName+" · "+company,largeFiles:"secureExpiringDownload"},project:Object.assign({},state.overview,{requestId:state.requestId,folder:projectFolder(),contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:Object.assign({},state.planning),contact:Object.assign({},state.contact)};
+    var payload={createdAt:new Date().toISOString(),dataPolicy:{storageRegion:DATA_POLICY.storageRegion,retentionDays:DATA_POLICY.retentionDays,automaticDeletion:true,secureDownloadForProjectFiles:true},delivery:{confirmationRecipients:["executingCompany","requester"],confirmationSubject:projectName+" · "+company,projectFiles:"secureExpiringDownload",emailAttachments:false},project:Object.assign({},state.overview,{requestId:state.requestId,folder:projectFolder(),contextComment:activeContextComment(),selectedAreas:state.selected.map(function(k){return PROJECTS[k].name;})}),areas:{},design:state.design,planning:Object.assign({},state.planning),contact:Object.assign({},state.contact)};
     state.selected.forEach(function(key){
       var data=state.areaData[key],items=Object.assign({},data.items),files={};
       if(items.Sonstiges && data.choices.indexOf("Sonstiges")<0)items.Sonstiges=Object.assign({},items.Sonstiges,{comment:""});

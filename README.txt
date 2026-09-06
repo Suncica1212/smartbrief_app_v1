@@ -45,7 +45,7 @@ VORBEREITET FÜR DEN PRODUKTIVBETRIEB BEI INFOMANIAK
 - Speicherung und Verarbeitung der Projektdaten in der Schweiz
 - automatische serverseitige Löschung gemäss assets/config.js
 - Bestätigung an ausführende Firma und anfragende Person
-- grosse Dateien über geschützte, zeitlich begrenzte Downloadlinks statt Mailanhang
+- Projektunterlagen und sämtliche Dateien ausschliesslich über geschützte, zeitlich begrenzte Download-Links statt Mailanhang
 - spätere Verwaltung von Aufbewahrung und Datenschutz im SmartBrief-Adminsystem
 
 Wichtig: Diese serverseitigen Funktionen werden erst mit dem Infomaniak-Backend aktiv.
